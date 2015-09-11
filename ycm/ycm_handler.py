@@ -12,7 +12,7 @@ import sublime
 
 from base64 import b64encode, b64decode
 from urllib.request import Request, urlopen
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlencode
 from urllib.error import HTTPError
 
 from .utils import *
@@ -24,7 +24,7 @@ _server = {}
 
 HMAC_HEADER = 'X-Ycm-Hmac'
 HMAC_SECRET_LENGTH = 16
-SERVER_IDLE_SUICIDE_SECONDS = 10800  # 3 hours
+SERVER_IDLE_SUICIDE_SECONDS = 3600  # 3 hours
 MAX_SERVER_WAIT_TIME_SECONDS = 5
 
 # Set this to True to see ycmd's output interleaved with the client's
@@ -63,7 +63,7 @@ class Event(object):
     CurrentIdentifierFinished = 'CurrentIdentifierFinished'
     pass
 
-class _YcmdHandle(object):
+class YcmdHandle(object):
 
     def __init__(self, popen_handle, port, hmac_secret):
         self._popen_handle = popen_handle
