@@ -1,5 +1,7 @@
 import sublime, sublime_plugin
 from .lib.settings import Settings
+from .ycm import *
+from .ycm.completionlistener import CppYCMCompletionsListener
 from .ycm.server import *
 
 class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
@@ -29,13 +31,13 @@ class CppYCMLoadExtraConfListener(sublime_plugin.EventListener):
 
 
 def plugin_loaded():
-    print("[Cppinabox] plugin_loaded() " + sublime.active_window().project_file_name())
+    print("[Cppinabox] plugin_loaded() " + str(sublime.active_window().project_file_name()))
     #TODO
     # sublime.message_dialog('[Cppinabox] Ycmd is not found, see https://github.com/glymehrvrd/CppYCM#installation for install instructions.')
 
 
 def plugin_unloaded():
-    print("[Cppinabox] plugin_unloaded() " + sublime.active_window().project_file_name())
+    print("[Cppinabox] plugin_unloaded() " + str(sublime.active_window().project_file_name()))
     deleteAllServers()
     # server().Shutdown()
 

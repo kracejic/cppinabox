@@ -32,9 +32,15 @@ class ProjectYCMDObject(object):
             print('[Cppinabox] Plugin not enabled for this project - ' + name)
             return
 
+        #find correct path
         conf_path = Settings.get(view, "ycm_extra_conf", None)
         if conf_path:
-            conf_path = os.path.join(os.path.dirname(name), conf_path)
+            if conf_path[0] == '\\' or conf_path[1] == ':':
+              pass
+            elif conf_path[0:2] == "./":
+                conf_path = os.path.join(os.path.dirname(name), conf_path[2:])
+            else:
+                conf_path = os.path.join(os.path.dirname(name), conf_path)
             print('[Cppinabox] .ycm_extra_conf.py FOUND in settings. - ' + conf_path)
         else:
             conf_path = find_recursive(name)
@@ -46,10 +52,10 @@ class ProjectYCMDObject(object):
                 self.conf_path = conf_path
                 self.runServer()
             else:
-                print('[Cppinabox] .ycm_extra_conf.py is WRONG. - ' + conf_path)
+                print('[Cppinabox] .ycm_extra_conf.py is specified, but wrongly. - ' + conf_path)
                 self.enabled = False
         else:
-            print('[Cppinabox] .ycm_extra_conf.py not found.')
+            print('[Cppinabox] .ycm_extra_conf.py was not specified and was not found.')
 
     def getStrStatus(self):
         return "E="+str(self.enabled)+"/R="+str(self.running)
@@ -57,10 +63,9 @@ class ProjectYCMDObject(object):
     def runServer(self):
         print('[Cppinabox] starting server - ' + self.conf_path)
         self.server = YcmdHandle.StartYcmdAndReturnHandle()
-        # print('[Cppinabox] waiting until ready - ' + self.conf_path)
         self.server.WaitUntilReady()
-        # print('[Cppinabox] YCMD server ready, configuring - ' + self.conf_path)
         self.server.LoadExtraConfFile(self.conf_path)
+        self.server.WaitUntilReady()
         print('[Cppinabox] YCMD server configured - ' + self.conf_path)
         self.running = True
 
@@ -112,7 +117,7 @@ def checkAllServers():
         if val.server:
             print("    ...actually checking")
             print("    Running: " + str(val.server.IsReady()))
-        else
+        else:
             print("    not using ycmd")
 
 

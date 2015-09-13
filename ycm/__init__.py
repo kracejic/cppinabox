@@ -4,8 +4,8 @@
 # from .loadextraconf import CppYCMLoadExtraConfListener
 
 
-# __all__ = [
-#     'CppYCMCompletionsListener',
-#     'CppYCMHighlightProblemsListener',
-#     'CppYCMLoadExtraConfListener'
-# ]
+from .completionlistener import CppYCMCompletionsListener
+
+__all__ = [
+    'CppYCMCompletionsListener',
+]

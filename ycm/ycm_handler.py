@@ -24,7 +24,7 @@ _server = {}
 
 HMAC_HEADER = 'X-Ycm-Hmac'
 HMAC_SECRET_LENGTH = 16
-SERVER_IDLE_SUICIDE_SECONDS = 3600  # 3 hours
+SERVER_IDLE_SUICIDE_SECONDS = 3600
 MAX_SERVER_WAIT_TIME_SECONDS = 5
 
 # Set this to True to see ycmd's output interleaved with the client's
