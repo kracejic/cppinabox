@@ -1,4 +1,5 @@
 {
+    "enable": false,
     "debugMode": false,
     "ycmd_path": "",
 }

@@ -2,11 +2,13 @@ import collections
 import hashlib
 import hmac
 import sublime
-
+import sys
+import time
 
 from .utils import *
 from ..lib.settings import Settings
 from .ycm_handler import *
+from ..lib.settings import printd
 
 
 
@@ -27,9 +29,12 @@ class ProjectYCMDObject(object):
         super(ProjectYCMDObject, self).__init__()
         self.name = name
 
+        self.reset(view)
+
+    def reset(self, view):
         pluginEnabled = Settings.get(view, "enable", False)
         if not pluginEnabled:
-            print('[Cppinabox] Plugin not enabled for this project - ' + name)
+            print('[Cppinabox] Plugin not enabled for this project - ' + self.name)
             return
 
         #find correct path
@@ -38,16 +43,16 @@ class ProjectYCMDObject(object):
             if conf_path[0] == '\\' or conf_path[1] == ':':
               pass
             elif conf_path[0:2] == "./":
-                conf_path = os.path.join(os.path.dirname(name), conf_path[2:])
+                conf_path = os.path.join(os.path.dirname(self.name), conf_path[2:])
             else:
-                conf_path = os.path.join(os.path.dirname(name), conf_path)
-            print('[Cppinabox] .ycm_extra_conf.py FOUND in settings. - ' + conf_path)
+                conf_path = os.path.join(os.path.dirname(self.name), conf_path)
+            printd('[Cppinabox] .ycm_extra_conf.py FOUND in settings. - ' + conf_path)
         else:
-            conf_path = find_recursive(name)
+            conf_path = find_recursive(self.name)
 
         if conf_path:
             if os.path.isfile(conf_path):
-                print('[Cppinabox] .ycm_extra_conf.py is FOUND on disk. - ' + conf_path)
+                printd('[Cppinabox] .ycm_extra_conf.py is FOUND on disk. - ' + conf_path)
                 self.enabled = True
                 self.conf_path = conf_path
                 self.runServer()
@@ -60,13 +65,30 @@ class ProjectYCMDObject(object):
     def getStrStatus(self):
         return "E="+str(self.enabled)+"/R="+str(self.running)
 
+    def checkAndRestartIfNeeded(self, view):
+        if self.enabled:
+            self.running = False
+            try:
+                self.running = self.server.IsReady()
+            except:
+                print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+            if self.running == False:
+                try:
+                    self.server.Shutdown()
+                except:
+                    print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+                self.server = None
+                self.reset(view)
+
+
+
     def runServer(self):
-        print('[Cppinabox] starting server - ' + self.conf_path)
+        printd('[Cppinabox] starting server - ' + self.conf_path)
         self.server = YcmdHandle.StartYcmdAndReturnHandle()
         self.server.WaitUntilReady()
         self.server.LoadExtraConfFile(self.conf_path)
         self.server.WaitUntilReady()
-        print('[Cppinabox] YCMD server configured - ' + self.conf_path)
+        print('[Cppinabox] YCMD server configured and running - ' + self.conf_path)
         self.running = True
 
 
@@ -76,14 +98,25 @@ _server = {}
 
 def getServer(view, project=None, filepath=None):
     global _server
+    # start = time.time()
     if project == None:
         project = view.window().project_file_name()
     if project == None:
         project = get_file_path()
 
+
     if not project in _server:
-        print("[Cppinabox] Creating ProjectYCMDObject( "+project+" )")
+        printd("[Cppinabox] Creating ProjectYCMDObject( "+project+" )")
+        printd("[Cppinabox]   *- file_name = "+str(view.file_name()))
+        printd("[Cppinabox]   *- name      = "+str(view.name()))
+        printd("[Cppinabox]   *- is_scratch= "+str(view.is_scratch()))
+        printd("[Cppinabox]   *- id        = "+str(view.id()))
+        printd("[Cppinabox]   *- size      = "+str(view.size()))
+        printd("[Cppinabox]   *- is_loading= "+str(view.is_loading()))
+        printd("[Cppinabox]   *- is_read_only= "+str(view.is_read_only()))
         _server[project] = ProjectYCMDObject(view, project)
+    _server[project].checkAndRestartIfNeeded(view)
+    # print ("TIME= " + str((time.time() - start)*1000) + " ms")
     return _server[project]
 
 
@@ -104,7 +137,7 @@ def deleteAllServers():
     for key,val in _server.items():
         print ("  " + key)
         if val.server:
-            print("    ...actually shutting down")
+            printd("    ...actually shutting down")
             val.server.Shutdown()
     _server = {}
 

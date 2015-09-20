@@ -3,6 +3,7 @@ from .lib.settings import Settings
 from .ycm import *
 from .ycm.completionlistener import CppYCMCompletionsListener
 from .ycm.server import *
+from .lib.settings import printd
 
 class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -27,7 +28,7 @@ class CppYCMLoadExtraConfListener(sublime_plugin.EventListener):
     '''
 
     def on_activated_async(self, view):
-        print("[Cppinabox] on_activated_async() " + get_file_path(view.file_name()) + " " + getServer(view).getStrStatus())
+        printd("[Cppinabox] on_activated_async() " + get_file_path(view.file_name()) + " " + getServer(view).getStrStatus())
 
 
 def plugin_loaded():
