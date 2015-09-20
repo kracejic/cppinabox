@@ -3,10 +3,10 @@ import sublime
 
 def get_plugin_path():
     '''
-    Get path of the C++YouCompleteMe plugin.
+    Get path of the cppinabox plugin.
     '''
     plugin_path = os.path.abspath(
-        os.path.join(sublime.packages_path(), 'C++YouCompleteMe'))
+        os.path.join(sublime.packages_path(), 'cppinabox'))
     return plugin_path
 
 
@@ -14,7 +14,7 @@ def get_ycmd_path():
     '''
     Get path of the ycmd server.
     '''
-    settings = sublime.load_settings('C++YouCompleteMe.sublime-settings')
+    settings = sublime.load_settings('cppinabox.sublime-settings')
     ycmd_path = settings.get('ycmd_path', os.path.join(
         get_plugin_path(), 'server'))
     ycmd_path = os.path.join(ycmd_path, 'ycmd')
@@ -25,7 +25,7 @@ def get_python_path():
     '''
     Get path of python.
     '''
-    settings = sublime.load_settings('C++YouCompleteMe.sublime-settings')
+    settings = sublime.load_settings('cppinabox.sublime-settings')
     python_path = settings.get('python_path', 'python')
     return python_path
 
@@ -41,7 +41,7 @@ def get_file_path(filepath=None):
     return filepath
 
 def get_error_panel_syntax_file():
-    settings = sublime.load_settings('C++YouCompleteMe.sublime-settings')
+    settings = sublime.load_settings('cppinabox.sublime-settings')
     filepath = settings.get('error_panel_syntax_file',  os.path.join(
         get_plugin_path(), 'ErrorPanel.tmLanguage'))
     return filepath
@@ -51,7 +51,7 @@ def check_highlight_on_save():
     '''
     Get if highlight on save.
     '''
-    settings = sublime.load_settings('C++YouCompleteMe.sublime-settings')
+    settings = sublime.load_settings('cppinabox.sublime-settings')
     rst = settings.get('highlight_errors_on_save', False)
     return rst
 
@@ -60,7 +60,7 @@ def check_select_after_goto():
     '''
     Get if select element after goto command.
     '''
-    settings = sublime.load_settings('C++YouCompleteMe.sublime-settings')
+    settings = sublime.load_settings('cppinabox.sublime-settings')
     rst = settings.get('select_after_goto', False)
     return rst
 
@@ -94,7 +94,7 @@ def is_cpp(view):
     '''
     try:
         return view.match_selector(view.sel()[0].begin(), 'source.c++')
-        print("[C++YouCompleteMe] IsCPP")
+        print("[cppinabox] IsCPP")
     except:
         return False
 

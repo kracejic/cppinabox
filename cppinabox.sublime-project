@@ -1,0 +1,16 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+    "settings":
+    {
+        "cppinabox":{
+            "ycm_extra_conf":"./test/.ycm_extra_conf.py",
+            "enable":true
+        },
+    },
+
+}

@@ -14,6 +14,8 @@ class Settings(object):
         """
         return sublime.load_settings("cppinabox.sublime-settings")
 
+    def isDebugMode():
+        return Settings._get_settings().get("debugMode", False)
 
     def get(view, key, default=None):
         """Load individual setting.
@@ -28,8 +30,12 @@ class Settings(object):
         if view != None:
             if view.settings().get('cppinabox') != None:
                 if key in view.settings().get('cppinabox'):
-                    return view.settings().get('cppinabox')[key];    
+                    return view.settings().get('cppinabox')[key];
 
         return Settings._get_settings().get(key, default)
 
+
+def printd(*args):
+    if Settings.isDebugMode() == True:
+        print(*args)
 

@@ -6,6 +6,7 @@ from threading import Thread
 from .server import *
 from .utils import *
 from ..lib.settings import Settings
+from ..lib.settings import printd
 
 
 def complete_func(server, filepath, contents, row, col, callback):
@@ -18,7 +19,7 @@ def complete_func(server, filepath, contents, row, col, callback):
                                            filetype='cpp',
                                            line_num=row,
                                            column_num=col)
-    print("[Cppinabox]   return = " + str(rst))
+    printd("[Cppinabox]   return = " + str(rst))
     if rst == '':
         return
 
@@ -51,14 +52,15 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
         '''
         Sublime Text autocompletion event handler.
         '''
-        print("[Cppinabox] Test completions")
+        printd("[Cppinabox] Completions start, test if cpp")
         if not is_cpp(view) or view.is_scratch():
             return
+        printd("[Cppinabox]              YES")
 
-        print("[Cppinabox] Test completions2")
+        printd("[Cppinabox] Completions - test if enabled")
         if not Settings.get(view, 'enable', False):
             return
-        print("[Cppinabox] Test completions3")
+        printd("[Cppinabox]              YES")
 
         # if completion should begin
         leftchar = view.substr(locations[0] - 2)
@@ -68,7 +70,7 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
         if thischar == ':' and leftchar != ':':
             return
 
-        print("[Cppinabox] Start completing." + str(self.ready_from_defer))
+        printd("[Cppinabox] Start completing." + str(self.ready_from_defer))
 
         if self.ready_from_defer is True:
             cpl = self.completions
@@ -86,7 +88,7 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
         t = Thread(None, complete_func, 'CompleteAsync',
                    [getServer(view), filepath, contents, row, col, self._complete])
         t.daemon = True
-        print("[Cppinabox] Starting daemon")
+        printd("[Cppinabox] Starting daemon")
         t.start()
 
     def _complete(self, proposals):
@@ -97,6 +99,7 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
             self._run_auto_complete()
         else:
             sublime.status_message("[Cppinabox] Completion not available")
+            print("[Cppinabox] Completion not available")
 
     def _run_auto_complete(self):
         active_view().run_command("auto_complete", {
