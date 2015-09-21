@@ -84,7 +84,17 @@ class ProjectYCMDObject(object):
 
     def runServer(self):
         printd('[Cppinabox] starting server - ' + self.conf_path)
-        self.server = YcmdHandle.StartYcmdAndReturnHandle()
+        try:
+            self.server = YcmdHandle.StartYcmdAndReturnHandle()
+        except FileNotFoundError:
+            print("[Cppinabox] File not found error: ", sys.exc_info()[0])
+            self.enabled = False
+            sublime.error_message("testestest")
+            return
+        except:
+            print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+            self.enabled = False
+            return
         self.server.WaitUntilReady()
         self.server.LoadExtraConfFile(self.conf_path)
         self.server.WaitUntilReady()

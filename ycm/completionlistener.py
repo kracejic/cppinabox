@@ -52,25 +52,27 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
         '''
         Sublime Text autocompletion event handler.
         '''
-        printd("[Cppinabox] Completions start, test if cpp")
         if not is_cpp(view) or view.is_scratch():
+            printd("[Cppinabox] is file cpp and valid? - NO")
             return
-        printd("[Cppinabox]              YES")
+        printd("[Cppinabox] is file cpp and valid? - YES")
 
-        printd("[Cppinabox] Completions - test if enabled")
-        if not Settings.get(view, 'enable', False):
+        if not getServer(view).enabled:
+            printd("[Cppinabox] Completions - test if enabled - NO")
             return
-        printd("[Cppinabox]              YES")
+        printd("[Cppinabox] Completions - test if enabled - YES")
 
         # if completion should begin
         leftchar = view.substr(locations[0] - 2)
         thischar = view.substr(locations[0] - 1)
         if thischar == '>' and leftchar != '-':
+            printd("[Cppinabox] Completions - not 1 case")
             return
         if thischar == ':' and leftchar != ':':
+            printd("[Cppinabox] Completions - not 2 case")
             return
 
-        printd("[Cppinabox] Start completing." + str(self.ready_from_defer))
+        printd("[Cppinabox] Start completing.")
 
         if self.ready_from_defer is True:
             cpl = self.completions
