@@ -19,7 +19,7 @@ from .utils import *
 from ..lib.settings import Settings
 # from .msgs import MsgTemplates
 
-_server = {}
+
 
 
 HMAC_HEADER = 'X-Ycm-Hmac'
