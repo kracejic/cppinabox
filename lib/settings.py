@@ -1,5 +1,5 @@
 import sublime
-
+import os
 
 class Settings(object):
     """docstring for Settings"""
@@ -16,6 +16,11 @@ class Settings(object):
 
     def isDebugMode():
         return Settings._get_settings().get("debugMode", False)
+
+    def getYcmdPath():
+        ycmd_path = Settings._get_settings().get("ycmd_path", "server")
+        ycmd_path = os.path.join(ycmd_path, 'ycmd')
+        return ycmd_path
 
     def get(view, key, default=None):
         """Load individual setting.

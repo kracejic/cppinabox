@@ -87,9 +87,10 @@ class ProjectYCMDObject(object):
         try:
             self.server = YcmdHandle.StartYcmdAndReturnHandle()
         except FileNotFoundError:
-            print("[Cppinabox] File not found error: ", sys.exc_info()[0])
+            print("[Cppinabox] File not found error: ", sys.exc_info())
             self.enabled = False
-            sublime.error_message("testestest")
+            sublime.error_message("[cppinabox] YCMD is enabled but it was not found on this path: \n" + Settings.getYcmdPath() 
+                + "\n\nPlease configure valid path in user settings for cppinabox. You can trigger another attempt by executing 'Stop YCMD server' command (via ctrl+P). ")
             return
         except:
             print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
