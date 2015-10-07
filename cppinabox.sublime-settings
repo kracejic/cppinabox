@@ -2,4 +2,5 @@
     "enable": false,
     "debugMode": false,
     "ycmd_path": "",
+    "python2path": "python",
 }

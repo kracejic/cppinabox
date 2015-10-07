@@ -26,7 +26,7 @@ def get_python_path():
     Get path of python.
     '''
     settings = sublime.load_settings('cppinabox.sublime-settings')
-    python_path = settings.get('python_path', 'python')
+    python_path = settings.get('python2path', 'python')
     return python_path
 
 

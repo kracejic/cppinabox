@@ -19,7 +19,7 @@ import os.path
 
 class YCMDServer(object):
     """docstring for YCMDServer"""
-    enabled = False
+    enabled = True
     running = False
     configured = False
 
@@ -33,6 +33,10 @@ class YCMDServer(object):
 
     def runServer(self):
         printd('[Cppinabox] Starting server')
+        if self.enabled == False:
+            printd('[Cppinabox] ... is disabled')
+            return
+
         try:
             self.server = YcmdHandle.StartYcmdAndReturnHandle()
         except FileNotFoundError:
@@ -48,11 +52,18 @@ class YCMDServer(object):
             self.errorSilenced = True
             return
         except:
-            print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+            print("[Cppinabox] Unexpected error4:", sys.exc_info())
             self.enabled = False
             return
-        self.server.WaitUntilReady()
-        self.running = True
+        
+
+        try:
+            self.server.WaitUntilReady()
+            self.running = True
+        except:
+            print("[Cppinabox] Server not running:", sys.exc_info())
+            self.enabled = False
+            return
 
     def loadConfig(self, view):
         pluginEnabled = Settings.get(view, "enable", False)
@@ -67,8 +78,7 @@ class YCMDServer(object):
             print('[Cppinabox] YCMD low level not instantiated')
             return
 
-        if projectPath == None:
-            projectPath = view.window().project_file_name()
+        projectPath = view.window().project_file_name()
         if projectPath == None:
             projectPath = get_file_path()
         filePath = get_file_path()
@@ -96,10 +106,10 @@ class YCMDServer(object):
             print('[Cppinabox] .ycm_extra_conf.py was not specified and was not found.')
             return
 
-        self.server.LoadExtraConfFile(path)
+        self.server.LoadExtraConfFile(os.path.normpath(conf_path))
         self.server.WaitUntilReady()
         self.configured = True
-        print('[Cppinabox] YCMD server configured - ' + conf_path)
+        print('[Cppinabox] YCMD server configured - ' + os.path.normpath(conf_path))
 
     def getStrStatus(self):
         if self.server:
@@ -107,45 +117,44 @@ class YCMDServer(object):
         return "E="+str(self.enabled)+" /R="+str(self.running)+" /C="+str(self.configured)
 
     def checkAndRestartIfNeeded(self, view):
-        self.enabled = Settings.get(view, "enable", False)
-        if self.enabled:
+        pluginEnabled = Settings.get(view, "enable", False)
+        if self.enabled == True and pluginEnabled == True:
             try:
                 self.running = False
                 if self.server:
                     self.running = self.server.IsReady()
             except:
-                print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+                print("[Cppinabox] Unexpected error1:", sys.exc_info()[0])
             if self.running == False:
                 try:
                     if self.server:
                         self.server.Shutdown()
                 except:
-                    print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+                    print("[Cppinabox] Unexpected error2:", sys.exc_info()[0])
                 self.server = None
                 self.runServer()
 
 
     def stopServer(self):
         self.errorSilenced = False
+        self.enabled = True
         if self.server == None:
             return
         try:
             self.server.Shutdown()
         except:
-            print("[Cppinabox] Unexpected error:", sys.exc_info()[0])
+            print("[Cppinabox] Unexpected error3:", sys.exc_info()[0])
         self.server = None
 
 
 
     def isRunning():
         if self.server:
-            if self.running:
+            if self.running == True:
                 self.running = self.server.IsReady()
-                if self.running:
+                if self.running == True:
                     return True
         return False
-
-
 
 
 

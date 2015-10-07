@@ -14,6 +14,7 @@ from base64 import b64encode, b64decode
 from urllib.request import Request, urlopen
 from urllib.parse import urljoin, urlencode
 from urllib.error import HTTPError
+import urllib
 
 from .utils import *
 from ..lib.settings import Settings
@@ -28,7 +29,7 @@ SERVER_IDLE_SUICIDE_SECONDS = 3600
 MAX_SERVER_WAIT_TIME_SECONDS = 5
 
 # Set this to True to see ycmd's output interleaved with the client's
-INCLUDE_YCMD_OUTPUT = False
+INCLUDE_YCMD_OUTPUT = True
 DEFINED_SUBCOMMANDS_HANDLER = '/defined_subcommands'
 CODE_COMPLETIONS_HANDLER = '/completions'
 COMPLETER_COMMANDS_HANDLER = '/run_completer_command'
@@ -38,16 +39,16 @@ EXTRA_CONF_HANDLER = '/load_extra_conf_file'
 # Wrapper around ycmd's HTTP+JSON API
 
 class MsgTemplates:
-    # COMPLETION_ERROR_MSG = "[C++YouCompleteMe][Completion] Error {}"
-    # COMPLETION_NOT_AVAILABLE_MSG = "[C++YouCompleteMe] No completion available"
+    # COMPLETION_ERROR_MSG = "[Cppinabox][Completion] Error {}"
+    # COMPLETION_NOT_AVAILABLE_MSG = "[Cppinabox] No completion available"
     # ERROR_MESSAGE_TEMPLATE = "[{kind}] {text}"
-    # GET_PATH_ERROR_MSG = "[C++YouCompleteMe][Path] Failed to replace '{}' -> '{}'"
-    # NO_HMAC_MESSAGE = "[C++YouCompleteMe] You should generate HMAC throug the menu before using plugin"
-    # NOTIFY_ERROR_MSG = "[C++YouCompleteMe][Notify] Error {}"
-    # PRINT_ERROR_MESSAGE_TEMPLATE = "[C++YouCompleteMe] > {} ({},{})\n"
-    # LOAD_EXTRA_CONF_FINISHED = '[C++YouCompleteMe] Finished loading extra configuration.'
-    # LOAD_SERVER_FINISHED = '[C++YouCompleteMe] Ycmd server registered, location: {}'
-    # SERVER_NOT_LOADED = '[C++YouCompleteMe] Ycmd server is not loaded.'
+    # GET_PATH_ERROR_MSG = "[Cppinabox][Path] Failed to replace '{}' -> '{}'"
+    # NO_HMAC_MESSAGE = "[Cppinabox] You should generate HMAC throug the menu before using plugin"
+    # NOTIFY_ERROR_MSG = "[Cppinabox][Notify] Error {}"
+    # PRINT_ERROR_MESSAGE_TEMPLATE = "[Cppinabox] > {} ({},{})\n"
+    # LOAD_EXTRA_CONF_FINISHED = '[Cppinabox] Finished loading extra configuration.'
+    # LOAD_SERVER_FINISHED = '[Cppinabox] Ycmd server registered, location: {}'
+    # SERVER_NOT_LOADED = '[Cppinabox] Ycmd server is not loaded.'
     pass
 
 class Event(object):
@@ -71,6 +72,10 @@ class YcmdHandle(object):
         self._hmac_secret = hmac_secret  # bytes
         self._server_location = 'http://127.0.0.1:%d' % port
 
+        proxy_handler = urllib.request.ProxyHandler({})
+        self.proxyLessUrlOpen = urllib.request.build_opener(proxy_handler)
+        
+
     @classmethod
     def StartYcmdAndReturnHandle(cls):
         prepared_options = DefaultSettings()
@@ -93,6 +98,7 @@ class YcmdHandle(object):
                              SERVER_IDLE_SUICIDE_SECONDS)]
 
             std_handles = None if INCLUDE_YCMD_OUTPUT else subprocess.PIPE
+            print(str(ycmd_args))
             child_handle = subprocess.Popen(ycmd_args,
                                             stdout=std_handles,
                                             stderr=std_handles)
@@ -211,13 +217,39 @@ class YcmdHandle(object):
             self._HmacForBody(data),
         ]), to_base64=True)
         req.add_header(HMAC_HEADER, request_hmac)
+
+        # try:
+        #     # print("Connecting to: " + self._server_location)
+        #     # print(urllib.request.urlopen(self._server_location).read())
+        #     loc = "http://127.0.0.1:62562/ready"
+        #     print("Connecting to: " + loc)
+        #     print(urlopen(loc).read())
+        # except HTTPError as err:
+        #     print('[Cppinabox] HTTP Error ' + str( err.code ) )
+        #     try:
+        #         readData = err.read().decode('utf-8')
+        #         print('                   Error from ycmd server: {}'.format(
+        #             json.loads(readData).get('message', '')))
+        #     except:
+        #         pass
+        # except:
+        #     print("Some other error")
+        #     pass
+        # print("  done")
+
         req.data = data
         try:
-            resp = urlopen(req)
+            # resp = urlopen(req)
+            resp = self.proxyLessUrlOpen.open(req)
         except HTTPError as err:
-            readData = err.read().decode('utf-8')
-            print('[C++YouCompleteMe] Error from ycmd server: {}'.format(
-                json.loads(readData).get('message', '')))
+            print('[Cppinabox] HTTP Error ' + str( err.code ) )
+            try:
+                readData = err.read().decode('utf-8')
+                print('                   Error from ycmd server: {}'.format(
+                    json.loads(readData).get('message', '')))
+            except:
+                pass
+                    
             return ''
 
         readData = resp.read()

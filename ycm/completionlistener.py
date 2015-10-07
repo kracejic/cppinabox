@@ -57,10 +57,10 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
             return
         printd("[Cppinabox] is file cpp and valid? - YES")
 
-        if not getServer(view).enabled:
-            printd("[Cppinabox] Completions - test if enabled - NO")
+        if not getServer().configured:
+            printd("[Cppinabox] Completions - test if configured and enabled - NO")
             return
-        printd("[Cppinabox] Completions - test if enabled - YES")
+        printd("[Cppinabox] Completions - test if configured and enabled - YES")
 
         # if completion should begin
         leftchar = view.substr(locations[0] - 2)
@@ -88,7 +88,7 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
 
         # start code-completion thread
         t = Thread(None, complete_func, 'CompleteAsync',
-                   [getServer(view), filepath, contents, row, col, self._complete])
+                   [getServer(), filepath, contents, row, col, self._complete])
         t.daemon = True
         printd("[Cppinabox] Starting daemon")
         t.start()
