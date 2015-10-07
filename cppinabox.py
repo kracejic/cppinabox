@@ -9,15 +9,15 @@ class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         print("test = " + str(Settings.get(self.view, "test", "default")))
         print("Active window - " + sublime.active_window().project_file_name())
-        deleteAllServers()
+        # deleteAllServers()
 
 class CppinaboxkillallCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        deleteAllServers()
+        stopServer()
 
 class CppinaboxycmdstatusCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        checkAllServers()
+        checkServer()
 
 
 
@@ -28,7 +28,9 @@ class CppYCMLoadExtraConfListener(sublime_plugin.EventListener):
     '''
 
     def on_activated_async(self, view):
-        printd("[Cppinabox] on_activated_async() " + get_file_path(view.file_name()) + " " + getServer(view).getStrStatus())
+        loadConfig(view)
+        status = getServer().getStrStatus()
+        printd("[Cppinabox] on_activated_async() " + status + " - " + get_file_path(view.file_name()) )
 
 
 def plugin_loaded():
