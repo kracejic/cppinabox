@@ -24,7 +24,7 @@ class YCMDServer(object):
     configured = False
 
     server = None
-    conf_path = None
+    lastConfPath = None
     errorSilenced = False
 
     def __init__(self):
@@ -106,8 +106,15 @@ class YCMDServer(object):
             print('[Cppinabox] .ycm_extra_conf.py was not specified and was not found.')
             return
 
+        printd(str(conf_path) + " == " + str(self.lastConfPath) + " ???")
+        if conf_path == self.lastConfPath:
+            self.configured = True
+            printd('[Cppinabox] PATH is the same, nothing configured - ' + os.path.normpath(conf_path))
+            return
+        
         self.server.LoadExtraConfFile(os.path.normpath(conf_path))
         self.server.WaitUntilReady()
+        self.lastConfPath = conf_path
         self.configured = True
         printd('[Cppinabox] YCMD server configured - ' + os.path.normpath(conf_path))
 

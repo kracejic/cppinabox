@@ -7,9 +7,26 @@
     "caption": "Cppinabox: YCMD status to console",
     "command": "cppinaboxycmdstatus"
   },
+
   {
     "caption": "Cppinabox: GOTO definition/declaration",
-    "command": "cppycmgoto"
+    "command": "cppycmgoto",
+    "args": {"command": "goto"}
+  },
+  {
+    "caption": "Cppinabox: GOTO declaration",
+    "command": "cppycmgoto",
+    "args": {"command": "declaration"}
+  },
+  {
+    "caption": "Cppinabox: GOTO definition",
+    "command": "cppycmgoto",
+    "args": {"command": "definition"}
+  },
+  {
+    "caption": "Cppinabox: GOTO imprecise",
+    "command": "cppycmgoto",
+    "args": {"command": "imprecise"}
   },
 
 

@@ -10,22 +10,34 @@ from ..lib.settings import printd
 
 
 
-def goto_func(server, filepath, contents, row, col, callback):
+def goto_func(server, filepath, contents, row, col, callback, command):
     '''
     Thread that send goto declaration
     '''
-    rst = server.server.SendGoToDeclarationRequest(filepath=filepath,
-                                 contents=contents,
-                                 filetype='cpp',
-                                 line_num=row,
-                                 column_num=col)
-    printd("[Cppinabox]   return = " + str(rst))
+    if command == "declaration":
+        cmd = 'GoToDeclaration'
+    elif command == "definition":
+        cmd = 'GoToDefinition'
+    elif command == "imprecise":
+        cmd = 'GoToImprecise'
+    else:
+        cmd = 'GoTo'
+    rst = server.server.SendRequest(filepath=filepath,
+                             contents=contents,
+                             filetype='cpp',
+                             line_num=row,
+                             column_num=col,
+                             reqcommand=cmd)
+
+
+    printd("[Cppinabox]   return("+cmd+") = " + str(rst))
     if rst == '':
         return
     data = json.loads(rst)
-    row = data.get('line_num', 1) - 1
-    col = data.get('column_num', 1) - 1
-    callback(row, col)
+    # row = data.get('line_num', 1) - 1
+    # col = data.get('column_num', 1) - 1
+    # filepath = data.get('filepath', '')
+    callback(data, cmd)
 
 
 class CppycmgotoCommand(sublime_plugin.TextCommand):
@@ -34,7 +46,7 @@ class CppycmgotoCommand(sublime_plugin.TextCommand):
     Goto command
     '''
 
-    def run(self, edit):
+    def run(self, edit, command):
         if not getServer().configured:
             printd("[Cppinabox] GOTO - test if configured and enabled - NO")
             return
@@ -47,7 +59,7 @@ class CppycmgotoCommand(sublime_plugin.TextCommand):
 
         # start goto thread
         t = Thread(None, goto_func, 'GotoAsync',
-                   [getServer(), filepath, contents, row, col, self._goto])
+                   [getServer(), filepath, contents, row, col, self._goto, command])
         t.daemon = True
         t.start()
 
@@ -58,14 +70,21 @@ class CppycmgotoCommand(sublime_plugin.TextCommand):
 
         return is_cpp(self.view)
 
-    def _goto(self, row, col):
+    def _goto(self, data, cmd):
         '''
         Goto declaration callback
         '''
-        point = self.view.text_point(row, col)
-        region = self.view.word(
-            point) if check_select_after_goto() else sublime.Region(point, point)
-        self.view.sel().clear()
-        self.view.sel().add(region)
-        self.view.show_at_center(region)
+        # point = self.view.text_point(row, col)
+        # region = self.view.word(
+        #     point) if check_select_after_goto() else sublime.Region(point, point)
+        # self.view.sel().clear()
+        # self.view.sel().add(region)
+        # self.view.show_at_center(region)
 
+        row = data.get('line_num', 1)
+        col = data.get('column_num', 1)
+        # filepath = get_file_path(data.get('filepath', self.view.file_name()), reverse=True)
+        filepath = data.get('filepath', self.view.file_name())
+        print("[Ycmd][GoTo] file: {}, row: {}, col: {}".format(filepath, row, col))
+        sublime.active_window().open_file('{}:{}:{}'.format(filepath, row, col),
+                                          sublime.ENCODED_POSITION)

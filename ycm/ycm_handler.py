@@ -164,19 +164,22 @@ class YcmdHandle(object):
                                         column_num=column_num)
         return self.PostToHandler(COMPLETER_COMMANDS_HANDLER, request_json)
 
-    def SendGoToDeclarationRequest(self,
+    def SendRequest(self,
                         filepath,
                         contents,
                         filetype,
                         line_num,
-                        column_num):
+                        column_num, 
+                        reqcommand):
         request_json = BuildRequestData(filepath=filepath,
                                         contents=contents,
-                                        command_arguments=['GoToDeclaration'],
+                                        command_arguments=[reqcommand],
                                         filetype=filetype,
                                         line_num=line_num,
                                         column_num=column_num)
         return self.PostToHandler(COMPLETER_COMMANDS_HANDLER, request_json)
+
+  
 
     def SendEventNotification(self,
                               event_name,

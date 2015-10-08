@@ -15,7 +15,7 @@ class Base {
     Base() { cout << "Base()" << endl; };
     virtual ~Base() { cout << "~Base()" << endl; };
 
-    virtual void f(){cout<<"base"<<endl;}
+    virtual void foo(){cout<<"base"<<endl;}
 };
 
 class Derived : public Base {
@@ -23,7 +23,7 @@ class Derived : public Base {
   public:
     Derived() { cout << "Derived()" << endl; };
     ~Derived() override { cout << "~Derived()" << endl; };
-    void f() override {cout<<"derived"<<endl;}
+    void foo() override {cout<<"derived"<<endl;}
 };
 
 

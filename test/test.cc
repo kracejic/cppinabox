@@ -10,7 +10,7 @@
 using namespace std;
 
 Derived TestClass::func(){
-    this->cislo
+    // this->
     return {};
 }
 
@@ -21,20 +21,23 @@ void foo(Base a)
     cout<<"size= "<<sizeof(Derived)<<endl;
     cout<<"size= "<<sizeof(a)<<endl;
     // Base *x = &a;
-    a.f();
+    a.foo();
 }
 
 void foo2(Base& a)
 {
     /* code */
-    a.f();
+    a.foo();
 }
 //-----------------------------------------------------------------------------------
 
 int main(int argc, char const *argv[])
 {
     Derived x;// = new Derived();
-    x.f();
+    x.foo();
+
+    TestClass ttt;
+    ttt.func();
 
     std::vector<Derived> v;
 
