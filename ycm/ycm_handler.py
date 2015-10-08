@@ -26,7 +26,7 @@ from ..lib.settings import Settings
 HMAC_HEADER = 'X-Ycm-Hmac'
 HMAC_SECRET_LENGTH = 16
 SERVER_IDLE_SUICIDE_SECONDS = 3600
-MAX_SERVER_WAIT_TIME_SECONDS = 5
+MAX_SERVER_WAIT_TIME_SECONDS = 10
 
 # Set this to True to see ycmd's output interleaved with the client's
 INCLUDE_YCMD_OUTPUT = True
@@ -159,6 +159,20 @@ class YcmdHandle(object):
         request_json = BuildRequestData(filepath=filepath,
                                         contents=contents,
                                         command_arguments=['GoTo'],
+                                        filetype=filetype,
+                                        line_num=line_num,
+                                        column_num=column_num)
+        return self.PostToHandler(COMPLETER_COMMANDS_HANDLER, request_json)
+
+    def SendGoToDeclarationRequest(self,
+                        filepath,
+                        contents,
+                        filetype,
+                        line_num,
+                        column_num):
+        request_json = BuildRequestData(filepath=filepath,
+                                        contents=contents,
+                                        command_arguments=['GoToDeclaration'],
                                         filetype=filetype,
                                         line_num=line_num,
                                         column_num=column_num)

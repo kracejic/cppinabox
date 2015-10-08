@@ -1,2 +1,40 @@
 
 
+#include <vector>
+#include <string>
+#include <iostream>
+#include <stdio.h>
+
+
+using namespace std;
+
+
+class Base {
+    int a, b;
+  public:
+    Base() { cout << "Base()" << endl; };
+    virtual ~Base() { cout << "~Base()" << endl; };
+
+    virtual void f(){cout<<"base"<<endl;}
+};
+
+class Derived : public Base {
+    int c;
+  public:
+    Derived() { cout << "Derived()" << endl; };
+    ~Derived() override { cout << "~Derived()" << endl; };
+    void f() override {cout<<"derived"<<endl;}
+};
+
+
+class TestClass
+{
+    int cislo {5};
+public:
+    TestClass();
+    ~TestClass();
+
+    Derived func();
+
+    
+};

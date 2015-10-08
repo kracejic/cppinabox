@@ -5,7 +5,9 @@
 
 
 from .completionlistener import CppYCMCompletionsListener
+from .goto import CppycmgotoCommand
 
 __all__ = [
     'CppYCMCompletionsListener',
+    'CppycmgotoCommand',
 ]

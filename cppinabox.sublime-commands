@@ -7,6 +7,10 @@
     "caption": "Cppinabox: YCMD status to console",
     "command": "cppinaboxycmdstatus"
   },
+  {
+    "caption": "Cppinabox: GOTO definition/declaration",
+    "command": "cppycmgoto"
+  },
 
 
   {
