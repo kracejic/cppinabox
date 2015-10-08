@@ -29,7 +29,8 @@ class YCMDServer(object):
 
     def __init__(self):
         super(YCMDServer, self).__init__()
-        print('[Cppinabox] Wrapper Init')
+        printd('[Cppinabox] Wrapper Init')
+
 
     def runServer(self):
         printd('[Cppinabox] Starting server')
@@ -40,7 +41,6 @@ class YCMDServer(object):
         try:
             self.server = YcmdHandle.StartYcmdAndReturnHandle()
         except FileNotFoundError:
-            print("[Cppinabox] File not found error: ", sys.exc_info())
             self.enabled = False
             self.running = False
             self.configured = False
@@ -52,30 +52,30 @@ class YCMDServer(object):
             self.errorSilenced = True
             return
         except:
-            print("[Cppinabox] Unexpected error4:", sys.exc_info())
+            print("[Cppinabox] Unexpected error during startup of YCMD:", sys.exc_info())
             self.enabled = False
             return
-        
 
         try:
             self.server.WaitUntilReady()
             self.running = True
         except:
-            print("[Cppinabox] Server not running:", sys.exc_info())
+            print("[Cppinabox] YCMD is not running even if it should:", sys.exc_info())
             self.enabled = False
             return
+
 
     def loadConfig(self, view):
         pluginEnabled = Settings.get(view, "enable", False)
         self.configured = False
         if not pluginEnabled:
-            print('[Cppinabox] Plugin not enabled for current project')
+            printd('[Cppinabox] Plugin not enabled for current project')
+            return
+        if self.server == None:
+            print('[Cppinabox] YCMD handler not instantiated') #should not happen
             return
         if self.running == False:
             print('[Cppinabox] Server not running')
-            return
-        if self.server == None:
-            print('[Cppinabox] YCMD low level not instantiated')
             return
 
         projectPath = view.window().project_file_name()
@@ -109,12 +109,14 @@ class YCMDServer(object):
         self.server.LoadExtraConfFile(os.path.normpath(conf_path))
         self.server.WaitUntilReady()
         self.configured = True
-        print('[Cppinabox] YCMD server configured - ' + os.path.normpath(conf_path))
+        printd('[Cppinabox] YCMD server configured - ' + os.path.normpath(conf_path))
+
 
     def getStrStatus(self):
         if self.server:
             self.running = self.server.IsReady()
         return "E="+str(self.enabled)+" /R="+str(self.running)+" /C="+str(self.configured)
+
 
     def checkAndRestartIfNeeded(self, view):
         pluginEnabled = Settings.get(view, "enable", False)
@@ -124,13 +126,13 @@ class YCMDServer(object):
                 if self.server:
                     self.running = self.server.IsReady()
             except:
-                print("[Cppinabox] Unexpected error1:", sys.exc_info()[0])
+                print("[Cppinabox] Error during isReady test:", sys.exc_info()[0])
             if self.running == False:
                 try:
                     if self.server:
                         self.server.Shutdown()
                 except:
-                    print("[Cppinabox] Unexpected error2:", sys.exc_info()[0])
+                    print("[Cppinabox] Error during shutdown:", sys.exc_info()[0])
                 self.server = None
                 self.runServer()
 
@@ -143,29 +145,22 @@ class YCMDServer(object):
         try:
             self.server.Shutdown()
         except:
-            print("[Cppinabox] Unexpected error3:", sys.exc_info()[0])
+            print("[Cppinabox] Error during shutdown2:", sys.exc_info()[0])
         self.server = None
 
 
 
-    def isRunning():
-        if self.server:
-            if self.running == True:
-                self.running = self.server.IsReady()
-                if self.running == True:
-                    return True
-        return False
 
 
-
-_server = {}
-
+# static _server reference
 _server1 = None
 
 def loadConfig(view):
     global _server1
     if _server1 == None:
         _server1 = YCMDServer()
+    if not is_cpp(view) or view.is_scratch():
+        return
     _server1.checkAndRestartIfNeeded(view)
     _server1.loadConfig(view)
     return _server1
@@ -173,89 +168,24 @@ def loadConfig(view):
 def getServer():
     global _server1
     if _server1 == None:
-        print("[Cppinabox] Wrapper not running")
+        printd("[Cppinabox] Wrapper not running")
+        _server1 = YCMDServer()
 
     return _server1
 
 
 def stopServer():
-    global _server1
+    getServer()
     if _server1:
         _server1.stopServer()
 
 def checkServer():
-    global _server1
+    getServer()
     print("[Cppinabox] Checking Wrapper / YCMD")
-    print("    result: " + str(_server1.getStrStatus()))
-    print("    result: " + str(_server1.isRunning()))
+    if _server1 == None:
+        print("    Wrapper not running")
+    else:
+        print("    result: " + str(_server1.getStrStatus()))
 
 
 
-# def getServer(view, project=None, filepath=None):
-#     global _server
-
-#     if project == None:
-#         project = view.window().project_file_name()
-#     if project == None:
-#         project = get_file_path()
-
-
-#     if not project in _server:
-#         printd("[Cppinabox] Creating YCMDServer( "+project+" )")
-#         printd("[Cppinabox]   *- file_name = "+str(view.file_name()))
-#         printd("[Cppinabox]   *- name      = "+str(view.name()))
-#         printd("[Cppinabox]   *- is_scratch= "+str(view.is_scratch()))
-#         printd("[Cppinabox]   *- id        = "+str(view.id()))
-#         printd("[Cppinabox]   *- size      = "+str(view.size()))
-#         printd("[Cppinabox]   *- is_loading= "+str(view.is_loading()))
-#         printd("[Cppinabox]   *- is_read_only= "+str(view.is_read_only()))
-#         _server[project] = YCMDServer(view, project)
-#     _server[project].checkAndRestartIfNeeded(view)
-#     return _server[project]
-
-
-# def deleteAllServers():
-#     global _server
-#     print ("[Cppinabox]  Deleting All YCMs()")
-#     for key,val in _server.items():
-#         print ("  " + key)
-#         if val.server:
-#             printd("    ...actually shutting down")
-#             val.server.Shutdown()
-#     _server = {}
-
-
-# def checkAllServers():
-#     global _server
-#     print ("[Cppinabox] Checking All YCMs()")
-#     for key,val in _server.items():
-#         print ("  " + key)
-#         if val.server:
-#             print("    ...actually checking")
-#             print("    Running: " + str(val.server.IsReady()))
-#         else:
-#             print("    not using ycmd")
-
-
-# def server(filepath=None):
-#     '''
-#     return singleton server instance and load extra configuration.
-#     '''
-#     global _server
-#     if not _server and filepath:
-#         # load server
-#         print("[C++YouCompleteMe] Loading server")
-#         _server = _YcmdHandle.StartYcmdAndReturnHandle()
-#         _server.WaitUntilReady()
-#         print(MsgTemplates.LOAD_SERVER_FINISHED.format(
-#               _server._server_location))
-#     if not _server:
-#         raise RuntimeError(MsgTemplates.SERVER_NOT_LOADED)
-#     return _server
-
-# def deleteSingleton():
-#     '''
-#     deletes Singleton for use in restart
-#     '''
-#     global _server
-#     _server = None

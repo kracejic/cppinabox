@@ -1,11 +1,7 @@
 [
   {
-    "caption": "Cppinabox: Stop all YCMD servers",
-    "command": "cppinaboxkillall"
-  },
-  {
     "caption": "Cppinabox: (Re)start YCMD server",
-    "command": "cppinaboxycmdstart"
+    "command": "cppinaboxkillall"
   },
   {
     "caption": "Cppinabox: YCMD status to console",

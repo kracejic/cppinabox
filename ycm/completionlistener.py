@@ -27,15 +27,19 @@ def complete_func(server, filepath, contents, row, col, callback):
 
     data = []
     for comp in completions:
-        for detailed_info in comp.get('detailed_info', '').strip().split('\n'):
+        if "extra_menu_info" in comp:
             data.append(
-                (
-                    '{}\t{}'.format(detailed_info,
-                                    comp.get('kind', '').lower()
-                                    ),
-                    comp.get('insertion_text', '')
+            ('{}\t{}'.format(comp.get('insertion_text', ''), comp.get('extra_menu_info', '').lower() ), comp.get('insertion_text', '')) )
+        else:
+            for detailed_info in comp.get('detailed_info', '').strip().split('\n'):
+                data.append(
+                    (
+                        '{}\t{}'.format(detailed_info,
+                                        comp.get('kind', '').lower()
+                                        ),
+                        comp.get('insertion_text', '')
+                    )
                 )
-            )
     callback(data)
 
 

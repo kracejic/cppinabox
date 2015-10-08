@@ -28,6 +28,9 @@ class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
 
 
 class CppinaboxkillallCommand(sublime_plugin.TextCommand):
+    '''
+    Kills the server and clears all the flags... this causes server to restart
+    '''
     def run(self, edit):
         stopServer()
 
@@ -38,11 +41,9 @@ class CppinaboxycmdstatusCommand(sublime_plugin.TextCommand):
 
 
 class CppYCMLoadExtraConfListener(sublime_plugin.EventListener):
-
     '''
     Activate ycmd server and loads extra_conf on cpp file loaded.
     '''
-
     def on_activated_async(self, view):
         loadConfig(view)
         status = getServer().getStrStatus()
@@ -50,12 +51,10 @@ class CppYCMLoadExtraConfListener(sublime_plugin.EventListener):
 
 
 def plugin_loaded():
-    print("[Cppinabox] plugin_loaded() " + str(sublime.active_window().project_file_name()))
-    #TODO
-    # sublime.message_dialog('[Cppinabox] Ycmd is not found, see https://github.com/glymehrvrd/CppYCM#installation for install instructions.')
+    print("[Cppinabox] plugin_loaded()")
 
 
 def plugin_unloaded():
-    print("[Cppinabox] plugin_unloaded() " + str(sublime.active_window().project_file_name()))
+    print("[Cppinabox] plugin_unloaded()")
     stopServer()
 

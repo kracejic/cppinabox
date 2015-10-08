@@ -110,7 +110,10 @@ class YcmdHandle(object):
         return returncode is None
 
     def IsReady(self, include_subservers=False):
-        if not self.IsAlive():
+        try:
+            if not self.IsAlive():
+                return False
+        except:
             return False
         params = {'include_subservers': 1} if include_subservers else None
         resp = self.GetFromHandler('ready', params)
