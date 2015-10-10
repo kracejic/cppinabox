@@ -111,7 +111,7 @@ class YCMDServer(object):
             self.configured = True
             printd('[Cppinabox] PATH is the same, nothing configured - ' + os.path.normpath(conf_path))
             return
-        
+
         self.server.LoadExtraConfFile(os.path.normpath(conf_path))
         self.server.WaitUntilReady()
         self.lastConfPath = conf_path
@@ -141,6 +141,7 @@ class YCMDServer(object):
                 except:
                     print("[Cppinabox] Error during shutdown:", sys.exc_info()[0])
                 self.server = None
+                self.lastConfPath = None
                 self.runServer()
 
 

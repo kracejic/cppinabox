@@ -32,6 +32,8 @@ def goto_func(server, filepath, contents, row, col, callback, command):
 
     printd("[Cppinabox]   return("+cmd+") = " + str(rst))
     if rst == '':
+        sublime.status_message("[Cppinabox] Cannot do "+cmd)
+        print("[Cppinabox] Cannot do "+cmd)
         return
     data = json.loads(rst)
     # row = data.get('line_num', 1) - 1
@@ -64,7 +66,7 @@ class CppycmgotoCommand(sublime_plugin.TextCommand):
         t.start()
 
     def is_enabled(self):
-        ''' 
+        '''
         Determine if this command is enabled or not
         '''
 
