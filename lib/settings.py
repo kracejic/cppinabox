@@ -20,7 +20,14 @@ class Settings(object):
     def getYcmdPath():
         ycmd_path = Settings._get_settings().get("ycmd_path", "server")
         ycmd_path = os.path.join(ycmd_path, 'ycmd')
+        ycmd_path = str(ycmd_path).replace("\\", "/")
         return ycmd_path
+
+    def isMSYSenviroment():
+        return Settings._get_settings().get("MSYS_path_fix", False)
+
+    def getMSYSPRECommand():
+        return Settings._get_settings().get("MSYS_pre_command", "")
 
     def get(view, key, default=None):
         """Load individual setting.
@@ -30,7 +37,8 @@ class Settings(object):
 
         :returns: value for ``key`` if ``key`` exists, else ``default``
         """
-
+        if view == None:
+            view = sublime.active_window().active_view()
 
         if view != None:
             if view.settings().get('cppinabox') != None:

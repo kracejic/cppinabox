@@ -28,9 +28,9 @@ void foo2(Base& a)
 {
     /* code */
     a.foo();
+    a.
 }
 //-----------------------------------------------------------------------------------
-
 int main(int argc, char const *argv[])
 {
     Derived x;// = new Derived();
@@ -40,6 +40,8 @@ int main(int argc, char const *argv[])
     ttt.func();
 
     std::vector<Derived> v;
+    v[1].foo();
+    v.
 
     // ((Base*)x)->f();
 

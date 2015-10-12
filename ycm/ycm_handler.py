@@ -9,6 +9,7 @@ import sys
 import tempfile
 import time
 import sublime
+import traceback
 
 from base64 import b64encode, b64decode
 from urllib.request import Request, urlopen
@@ -90,12 +91,16 @@ class YcmdHandle(object):
             json.dump(prepared_options, options_file)
             options_file.flush()
             server_port = GetUnusedLocalhostPort()
-            ycmd_args = [get_python_path(),
-                         get_ycmd_path(),
+            ycmd_args = [convertPathToMSYS(get_python_path()),
+                         convertPathToMSYS(Settings.getYcmdPath()),
                          '--port={0}'.format(server_port),
-                         '--options_file={0}'.format(options_file.name),
+                         '--options_file={0}'.format(convertPathToMSYS(options_file.name)),
                          '--idle_suicide_seconds={0}'.format(
                              SERVER_IDLE_SUICIDE_SECONDS)]
+
+            if Settings.getMSYSPRECommand() != "":
+                ycmd_args = [Settings.getMSYSPRECommand()] + ycmd_args
+
 
             std_handles = None if INCLUDE_YCMD_OUTPUT else subprocess.PIPE
             print(str(ycmd_args))
@@ -209,6 +214,7 @@ class YcmdHandle(object):
         time.sleep(0.5)
         total_slept += 0.5
         while True:
+            print("trying to connect")
             try:
                 if total_slept > MAX_SERVER_WAIT_TIME_SECONDS:
                     raise RuntimeError(
@@ -217,6 +223,10 @@ class YcmdHandle(object):
 
                 if self.IsReady(include_subservers):
                     return
+            except urllib.error.URLError as err:
+                print('[Cppinabox] URLError Reason: ' + str(err.reason))
+            except:
+                print(traceback.format_exc())
             finally:
                 time.sleep(0.1)
                 total_slept += 0.1
@@ -321,11 +331,11 @@ def ContentHexHmacValid(content, hmac_secret, hmac_str):
 
 
 def DefaultSettings():
-    default_options_path = os.path.join(get_ycmd_path(),
-                                        'default_settings.json')
-    with open(default_options_path, 'rb') as f:
-        return json.loads(f.read().decode('utf-8'))
-
+    # default_options_path = os.path.join(Settings.getYcmdPath(),
+    #                                     'default_settings.json')
+    # with open(default_options_path, 'rb') as f:
+    #     return json.loads(f.read().decode('utf-8'))
+    return dict(default_data_json)
 
 def GetUnusedLocalhostPort():
     sock = socket.socket()
@@ -392,3 +402,47 @@ def CppGotoDeclaration(server):
                            line_num=23,
                            column_num=4)
 
+
+
+default_data_json = {
+  "filepath_completion_use_working_dir": 0,
+  "auto_trigger": 1,
+  "min_num_of_chars_for_completion": 2,
+  "min_num_identifier_candidate_chars": 0,
+  "semantic_triggers": {},
+  "filetype_specific_completion_to_disable": {
+    "gitcommit": 1
+  },
+  "seed_identifiers_with_syntax": 0,
+  "collect_identifiers_from_comments_and_strings": 0,
+  "collect_identifiers_from_tags_files": 0,
+  "max_num_identifier_candidates": 10,
+  "extra_conf_globlist": [],
+  "global_ycm_extra_conf": "",
+  "confirm_extra_conf": 1,
+  "complete_in_comments": 0,
+  "complete_in_strings": 1,
+  "max_diagnostics_to_display": 30,
+  "filetype_whitelist": {
+    "*": 1
+  },
+  "filetype_blacklist": {
+    "tagbar": 1,
+    "qf": 1,
+    "notes": 1,
+    "markdown": 1,
+    "unite": 1,
+    "text": 1,
+    "vimwiki": 1,
+    "pandoc": 1,
+    "infolog": 1,
+    "mail": 1
+  },
+  "auto_start_csharp_server": 1,
+  "auto_stop_csharp_server": 1,
+  "use_ultisnips_completer": 1,
+  "csharp_server_port": 0,
+  "hmac_secret": "",
+  "server_keep_logfiles": 0,
+  "gocode_binary_path": ""
+}

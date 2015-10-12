@@ -44,7 +44,10 @@ class YCMDServer(object):
             self.enabled = False
             self.running = False
             self.configured = False
-            msg = "[cppinabox] YCMD is enabled but it was not found on this path: \n" + Settings.getYcmdPath() + "\n\nPlease configure valid path in user settings for cppinabox. You can trigger another attempt by executing 'Stop YCMD server' command (via ctrl+P). "
+            msg = "[cppinabox] YCMD is enabled but it was not found on this path: \n" \
+                + Settings.getYcmdPath() + "\n\nPlease configure valid path in user \
+                settings for cppinabox. You can trigger another attempt by executing \
+                'Stop YCMD server' command (via ctrl+P). \n or Python is on wrong path"
             if self.errorSilenced:
                 print(msg)
             else:
@@ -62,6 +65,7 @@ class YCMDServer(object):
         except:
             print("[Cppinabox] YCMD is not running even if it should:", sys.exc_info())
             self.enabled = False
+            self.running = False
             return
 
 

@@ -60,6 +60,14 @@ flags = [
 '/usr/include',
 '-isystem',
 '/usr/local/include',
+ "-isystemD:/work/msys64/mingw32/include/c++/5.2.0",
+ "-isystemD:/work/msys64/mingw32/include/c++/5.2.0/i686-w64-mingw32",
+ "-isystemD:/work/msys64/mingw32/include/c++/5.2.0/backward",
+ "-isystemD:/work/msys64/mingw32/bin/../lib/clang/3.7.0/include",
+ "-isystemD:/work/msys64/mingw32/lib/gcc/i686-w64-mingw32/5.2.0/include",
+ "-isystemD:/work/msys64/mingw32/lib/gcc/i686-w64-mingw32/5.2.0/include-fixed",
+ "-isystemD:/work/msys64/mingw32/i686-w64-mingw32/include",
+ "-isystemD:/work/msys64/mingw32/include",
 ]
 
 
@@ -137,7 +145,6 @@ def GetCompilationInfoForFile( filename ):
     return None
   return database.GetCompilationInfoForFile( filename )
 
-
 def FlagsForFile( filename, **kwargs ):
   if database:
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
@@ -153,15 +160,22 @@ def FlagsForFile( filename, **kwargs ):
     # NOTE: This is just for YouCompleteMe; it's highly likely that your project
     # does NOT need to remove the stdlib flag. DO NOT USE THIS IN YOUR
     # ycm_extra_conf IF YOU'RE NOT 100% SURE YOU NEED IT.
-    try:
-      final_flags.remove( '-stdlib=libc++' )
-    except ValueError:
-      pass
+    # try:
+    #   final_flags.remove( '-stdlib=libc++' )
+    # except ValueError:
+    #   pass
   else:
     relative_to = DirectoryOfThisScript()
     final_flags = MakeRelativePathsInFlagsAbsolute( flags, relative_to )
+
+  # import json
+  # pretty = json.dumps(final_flags, indent=2, separators=(',', ': '))
+  # print("Final flags for" +str(filename) + "\n   = " + str(pretty))
+
+
 
   return {
     'flags': final_flags,
     'do_cache': True
   }
+

@@ -3,4 +3,6 @@
     "debugMode": false,
     "ycmd_path": "",
     "python2path": "python",
+    "MSYS_path_fix": false,
+    "MSYS_pre_command": "",
 }

@@ -1,5 +1,7 @@
 import os
 import sublime
+import re
+from ..lib.settings import Settings
 
 def get_plugin_path():
     '''
@@ -28,6 +30,13 @@ def get_python_path():
     settings = sublime.load_settings('cppinabox.sublime-settings')
     python_path = settings.get('python2path', 'python')
     return python_path
+
+def convertPathToMSYS(filename):
+    if Settings.isMSYSenviroment() == True:
+        x = filename.replace("\\", "/")
+        x2 = re.sub(r'(.):/', r'/\1/', x)
+        return x2
+    return filename
 
 
 def get_file_path(filepath=None):
