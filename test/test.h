@@ -29,8 +29,9 @@ class Derived : public Base {
 
 class TestClass
 {
-    int cislo {5};
 public:
+    Derived x;
+    int cislo {5};
     TestClass();
     ~TestClass();
 

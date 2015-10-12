@@ -87,6 +87,6 @@ class CppycmgotoCommand(sublime_plugin.TextCommand):
         col = data.get('column_num', 1)
         # filepath = get_file_path(data.get('filepath', self.view.file_name()), reverse=True)
         filepath = data.get('filepath', self.view.file_name())
-        print("[Ycmd][GoTo] file: {}, row: {}, col: {}".format(filepath, row, col))
+        printd("[Cppinabox] GOTO file: {}, row: {}, col: {}".format(filepath, row, col))
         sublime.active_window().open_file('{}:{}:{}'.format(filepath, row, col),
                                           sublime.ENCODED_POSITION)

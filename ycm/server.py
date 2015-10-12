@@ -137,11 +137,11 @@ class YCMDServer(object):
             if self.running == False:
                 try:
                     if self.server:
+                        self.lastConfPath = None
                         self.server.Shutdown()
                 except:
                     print("[Cppinabox] Error during shutdown:", sys.exc_info()[0])
                 self.server = None
-                self.lastConfPath = None
                 self.runServer()
 
 
@@ -151,6 +151,7 @@ class YCMDServer(object):
         if self.server == None:
             return
         try:
+            self.lastConfPath = None
             self.server.Shutdown()
         except:
             print("[Cppinabox] Error during shutdown2:", sys.exc_info()[0])
