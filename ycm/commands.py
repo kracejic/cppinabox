@@ -27,14 +27,9 @@ def goto_func(server, filepath, contents, row, col, callback, callbackFail, cmd)
 
     printd("[Cppinabox] [Cmd]   return("+cmd+") = " + str(rst))
     if rst == '':
-        # sublime.status_message("[Cppinabox] Cannot do "+cmd)
-        # print("[Cppinabox] Cannot do "+cmd)
         callbackFail()
 
     data = json.loads(rst)
-    # row = data.get('line_num', 1) - 1
-    # col = data.get('column_num', 1) - 1
-    # filepath = data.get('filepath', '')
     callback(data)
 
 
@@ -103,6 +98,7 @@ class CppinaboxgotoCommand(CustomBaseCommandCommand):
 class CppinaboxgotodeclarationCommand(CppinaboxgotoCommand):
     command = "GoToDeclaration"
 
+
 class CppinaboxgotodefinitionCommand(CppinaboxgotoCommand):
     command = "GoToDefinition"
 
@@ -127,6 +123,8 @@ def displayResult(text):
 
 
 
+
+
 class CppinaboxgetBaseMessageCommand(CustomBaseCommandCommand):
     command = "GetParent"
     whereDataAre = ""
@@ -134,12 +132,13 @@ class CppinaboxgetBaseMessageCommand(CustomBaseCommandCommand):
     def onSuccess(self, data):
         sublime.status_message("[Cppinabox] "+self.command+" success")
         if self.whereDataAre in data:
-            print("[Cppinabox] "+self.command+" success = " + data[self.whereDataAre])
+            print("[Cppinabox] "+self.command+" success")
             displayResult(data[self.whereDataAre])
 
     def onFail(self):
         print("[Cppinabox] [Cmd] "+self.command+" failed")
         sublime.status_message("[Cppinabox] "+self.command+" failed")
+        displayResult("nothing was found")
 
 
 
@@ -149,11 +148,9 @@ class CppinaboxgetparentCommand(CppinaboxgetBaseMessageCommand):
     whereDataAre = "message"
 
 
-
 class CppinaboxgettypeCommand(CppinaboxgetBaseMessageCommand):
     command = "GetType"
     whereDataAre = "message"
-
 
 
 class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):

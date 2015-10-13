@@ -5,15 +5,15 @@
 
 
 from .completionlistener import CppinaboxCompletionsListener
-from .goto import CppinaboxgotoCommand
-from .goto import CppinaboxgotodeclarationCommand
-from .goto import CppinaboxgotodefinitionCommand
-from .goto import CppinaboxgotoimpreciseCommand
+from .commands import CppinaboxgotoCommand
+from .commands import CppinaboxgotodeclarationCommand
+from .commands import CppinaboxgotodefinitionCommand
+from .commands import CppinaboxgotoimpreciseCommand
 
-from .goto import CppinaboxgetparentCommand
-from .goto import CppinaboxgettypeCommand
-from .goto import CppinaboxgetdocCommand
-from .goto import CppinaboxgetdocquickCommand
+from .commands import CppinaboxgetparentCommand
+from .commands import CppinaboxgettypeCommand
+from .commands import CppinaboxgetdocCommand
+from .commands import CppinaboxgetdocquickCommand
 
 __all__ = [
     'CppinaboxCompletionsListener',

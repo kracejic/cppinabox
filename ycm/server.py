@@ -21,42 +21,53 @@ class YCMDServer(object):
     """docstring for YCMDServer"""
     enabled = True
     running = False
+    failcount = 0
+
+
     configured = False
 
     server = None
     lastConfPath = None
-    errorSilenced = False
 
     def __init__(self):
         super(YCMDServer, self).__init__()
         printd('[Cppinabox] Wrapper Init')
 
+    def _fail(self):
+        self.running = False
+        self.configured = False
+        self.failcount = self.failcount + 1
+        if self.failcount > 3:
+            self.enabled = False
 
-    def runServer(self):
-        printd('[Cppinabox] Starting server')
-        if self.enabled == False:
-            printd('[Cppinabox] ... is disabled')
+    def _runServer(self):
+        if Settings.isEnabled() == False:
+            printd('[Cppinabox] Not starting server, since it is disabled')
             return
+        if self.enabled == False:
+            printd('[Cppinabox] Not starting server, since it had some problems in past, try to restart it with restart')
+            return
+        printd('[Cppinabox] Starting server...')
 
         try:
+            sublime.status_message("[Cppinabox] starting YCMD server")
             self.server = YcmdHandle.StartYcmdAndReturnHandle()
         except FileNotFoundError:
-            self.enabled = False
-            self.running = False
-            self.configured = False
+            self._fail()
             msg = "[cppinabox] YCMD is enabled but it was not found on this path: \n" \
                 + Settings.getYcmdPath() + "\n\nPlease configure valid path in user \
                 settings for cppinabox. You can trigger another attempt by executing \
                 'Stop YCMD server' command (via ctrl+P). \n or Python is on wrong path"
-            if self.errorSilenced:
+            if self.failcount > 1:
                 print(msg)
             else:
                 sublime.error_message(msg)
-            self.errorSilenced = True
+                print(msg)
             return
         except:
             print("[Cppinabox] Unexpected error during startup of YCMD:", sys.exc_info())
-            self.enabled = False
+            sublime.status_message("[Cppinabox] Unexpected error during startup of YCMD:")
+            self._fail()
             return
 
         try:
@@ -64,16 +75,18 @@ class YCMDServer(object):
             self.running = True
         except:
             print("[Cppinabox] YCMD is not running even if it should:", sys.exc_info())
-            self.enabled = False
-            self.running = False
+            sublime.status_message("[Cppinabox] YCMD is not running even if it should:")
+            self._fail()
             return
 
 
     def loadConfig(self, view):
-        pluginEnabled = Settings.get(view, "enable", False)
         self.configured = False
-        if not pluginEnabled:
+        if Settings.isEnabled() == False:
             printd('[Cppinabox] Plugin not enabled for current project')
+            return
+        if self.enabled == False:
+            printd('[Cppinabox] Plugin was disabled')
             return
         if self.server == None:
             print('[Cppinabox] YCMD handler not instantiated') #should not happen
@@ -113,11 +126,17 @@ class YCMDServer(object):
         printd(str(conf_path) + " == " + str(self.lastConfPath) + " ???")
         if conf_path == self.lastConfPath:
             self.configured = True
-            printd('[Cppinabox] PATH is the same, nothing configured - ' + os.path.normpath(conf_path))
+            # printd('[Cppinabox] PATH is the same, nothing configured - ' + os.path.normpath(conf_path))
             return
 
         self.server.LoadExtraConfFile(os.path.normpath(conf_path))
-        self.server.WaitUntilReady()
+        try:
+            self.server.WaitUntilReady()
+        except:
+            print("[Cppinabox] Unexpected error during configuring of YCMD:", sys.exc_info())
+            self._fail()
+            return
+            
         self.lastConfPath = conf_path
         self.configured = True
         printd('[Cppinabox] YCMD server configured - ' + os.path.normpath(conf_path))
@@ -126,12 +145,20 @@ class YCMDServer(object):
     def getStrStatus(self):
         if self.server:
             self.running = self.server.IsReady()
-        return "E="+str(self.enabled)+" /R="+str(self.running)+" /C="+str(self.configured)
+        return "E="+str(Settings.isEnabled())+" /R="+str(self.running)+" /C="+str(self.configured)
+
+    def getStrStatusLong(self):
+        if self.server:
+            self.running = self.server.IsReady()
+        txt =  "  Enabled="+str(Settings.isEnabled()) \
+            +"\n  Runnning="+str(self.running) \
+            +"\n  Configured="+str(self.configured) \
+            +"\n  Failcount="+str(self.failcount)
+        return txt
 
 
     def checkAndRestartIfNeeded(self, view):
-        pluginEnabled = Settings.get(view, "enable", False)
-        if self.enabled == True and pluginEnabled == True:
+        if self.enabled == True and Settings.isEnabled() == True:
             try:
                 self.running = False
                 if self.server:
@@ -139,26 +166,26 @@ class YCMDServer(object):
             except:
                 print("[Cppinabox] Error during isReady test:", sys.exc_info()[0])
             if self.running == False:
-                try:
-                    if self.server:
-                        self.lastConfPath = None
-                        self.server.Shutdown()
-                except:
-                    print("[Cppinabox] Error during shutdown:", sys.exc_info()[0])
-                self.server = None
-                self.runServer()
+                self._stopServer()
+                self._runServer()
+
+
+    def _stopServer(self):
+        try:
+            if self.server:
+                self.server.Shutdown()
+        except:
+            print("[Cppinabox] Error during shutdown:", sys.exc_info()[0])
+        self.lastConfPath = None
+        self.configured = False
+        self.running = False
+        self.server = None
 
 
     def stopServer(self):
         self.errorSilenced = False
         self.enabled = True
-        if self.server == None:
-            return
-        try:
-            self.lastConfPath = None
-            self.server.Shutdown()
-        except:
-            print("[Cppinabox] Error during shutdown2:", sys.exc_info()[0])
+        self._stopServer()
         self.server = None
 
 
@@ -187,18 +214,22 @@ def getServer():
     return _server1
 
 
-def stopServer():
+def restartServer():
     getServer()
     if _server1:
         _server1.stopServer()
+    _server1.checkAndRestartIfNeeded(sublime.active_window().active_view())
 
 def checkServer():
     getServer()
+    txt =  "Status of cppinabox:\n";
     print("[Cppinabox] Checking Wrapper / YCMD")
     if _server1 == None:
         print("    Wrapper not running")
+        txt = txt + "\n    Wrapper not running"
     else:
-        print("    result: " + str(_server1.getStrStatus()))
-
+        print("    result: " + str(_server1.getStrStatusLong()))
+        txt = txt + str(_server1.getStrStatusLong())
+    return txt
 
 

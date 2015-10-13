@@ -19,6 +19,7 @@ import urllib
 
 from .utils import *
 from ..lib.settings import Settings
+from ..lib.settings import printd
 # from .msgs import MsgTemplates
 
 
@@ -103,7 +104,7 @@ class YcmdHandle(object):
 
 
             std_handles = None if INCLUDE_YCMD_OUTPUT else subprocess.PIPE
-            print(str(ycmd_args))
+            printd("Run command: " + str(ycmd_args))
             child_handle = subprocess.Popen(ycmd_args,
                                             stdout=std_handles,
                                             stderr=std_handles)
@@ -213,23 +214,19 @@ class YcmdHandle(object):
         total_slept = 0
         time.sleep(0.5)
         total_slept += 0.5
-        while True:
-            print("trying to connect")
+        while total_slept < MAX_SERVER_WAIT_TIME_SECONDS:
+            printd("trying to connect")
             try:
-                if total_slept > MAX_SERVER_WAIT_TIME_SECONDS:
-                    raise RuntimeError(
-                        'waited for the server for {0} seconds, aborting'.format(
-                            MAX_SERVER_WAIT_TIME_SECONDS))
-
                 if self.IsReady(include_subservers):
                     return
             except urllib.error.URLError as err:
                 print('[Cppinabox] URLError Reason: ' + str(err.reason))
             except:
-                print(traceback.format_exc())
+                printd("[Cppinabox] Exception in WaitUntilReady: " + traceback.format_exc())
             finally:
-                time.sleep(0.1)
-                total_slept += 0.1
+                time.sleep(0.2)
+                total_slept += 0.2
+        raise RuntimeError('waited for the server for {0} seconds, aborting'.format(MAX_SERVER_WAIT_TIME_SECONDS))
 
     def _BuildUri(self, handler):
         return urljoin(self._server_location, handler)
@@ -248,28 +245,8 @@ class YcmdHandle(object):
         ]), to_base64=True)
         req.add_header(HMAC_HEADER, request_hmac)
 
-        # try:
-        #     # print("Connecting to: " + self._server_location)
-        #     # print(urllib.request.urlopen(self._server_location).read())
-        #     loc = "http://127.0.0.1:62562/ready"
-        #     print("Connecting to: " + loc)
-        #     print(urlopen(loc).read())
-        # except HTTPError as err:
-        #     print('[Cppinabox] HTTP Error ' + str( err.code ) )
-        #     try:
-        #         readData = err.read().decode('utf-8')
-        #         print('                   Error from ycmd server: {}'.format(
-        #             json.loads(readData).get('message', '')))
-        #     except:
-        #         pass
-        # except:
-        #     print("Some other error")
-        #     pass
-        # print("  done")
-
         req.data = data
         try:
-            # resp = urlopen(req)
             resp = self.proxyLessUrlOpen.open(req)
         except HTTPError as err:
             print('[Cppinabox] HTTP Error ' + str( err.code ) )

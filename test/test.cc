@@ -66,6 +66,8 @@ int main(int argc, char const *argv[])
     vvvv[1].foo();
     auto front = vvvv.front();
 
+    front.foo()
+
     // ((Base*)x)->f();
 
     foo(x);

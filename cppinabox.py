@@ -38,16 +38,17 @@ class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
         window.run_command("show_panel", {"panel": "output.paneltest"})
 
 
-class CppinaboxkillallCommand(sublime_plugin.TextCommand):
+class CppinaboxrestartCommand(sublime_plugin.TextCommand):
     '''
     Kills the server and clears all the flags... this causes server to restart
     '''
     def run(self, edit):
-        stopServer()
+        restartServer()
 
 class CppinaboxycmdstatusCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        checkServer()
+        data = checkServer()
+        displayResultToPanel("cppinabox_status", data)
 
 
 

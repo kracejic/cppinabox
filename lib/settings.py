@@ -15,7 +15,10 @@ class Settings(object):
         return sublime.load_settings("cppinabox.sublime-settings")
 
     def isDebugMode():
-        return Settings._get_settings().get("debugMode", False)
+        return Settings.get(None, "debugMode", False)
+
+    def isEnabled():
+        return Settings.get(None, "enable", False)
 
     def getYcmdPath():
         ycmd_path = Settings._get_settings().get("ycmd_path", "server")

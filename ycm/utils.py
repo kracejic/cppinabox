@@ -129,3 +129,13 @@ def get_row_col(view, location=None):
         return None
 
 
+def displayResultToPanel(panel, text):
+    window = sublime.active_window()
+    pt = window.create_output_panel(panel)
+
+    pt.set_read_only(False)
+    pt.run_command('erase_view')
+    pt.run_command('append', {'characters': text})
+    pt.set_read_only(True)
+
+    window.run_command("show_panel", {"panel": "output."+panel})
