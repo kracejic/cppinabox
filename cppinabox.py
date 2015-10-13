@@ -1,7 +1,7 @@
 import sublime, sublime_plugin
 from .lib.settings import Settings
 from .ycm import *
-from .ycm.completionlistener import CppYCMCompletionsListener
+from .ycm.completionlistener import CppinaboxCompletionsListener
 from .ycm.server import *
 from .lib.settings import printd
 

@@ -8,27 +8,41 @@
     "command": "cppinaboxycmdstatus"
   },
 
+
+
   {
     "caption": "Cppinabox: GOTO definition/declaration",
-    "command": "cppycmgoto",
+    "command": "cppinaboxgoto",
   },
   {
     "caption": "Cppinabox: GOTO declaration",
-    "command": "cppycmgotodeclaration",
+    "command": "cppinaboxgotodeclaration",
   },
   {
     "caption": "Cppinabox: GOTO definition",
-    "command": "cppycmgotodefinition",
+    "command": "cppinaboxgotodefinition",
   },
   {
     "caption": "Cppinabox: GOTO imprecise",
-    "command": "cppycmgotoimprecise",
+    "command": "cppinaboxgotoimprecise",
   },
 
 
   {
     "caption": "Cppinabox: Get parent",
-    "command": "Cppycmgetparent",
+    "command": "cppinaboxgetparent",
+  },
+  {
+    "caption": "Cppinabox: Get type",
+    "command": "cppinaboxgettype",
+  },
+  {
+    "caption": "Cppinabox: Get doc",
+    "command": "cppinaboxgetdoc",
+  },
+  {
+    "caption": "Cppinabox: Get doc quick",
+    "command": "cppinaboxgetdocquick",
   },
 
 

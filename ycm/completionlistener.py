@@ -43,7 +43,7 @@ def complete_func(server, filepath, contents, row, col, callback):
     callback(data)
 
 
-class CppYCMCompletionsListener(sublime_plugin.EventListener):
+class CppinaboxCompletionsListener(sublime_plugin.EventListener):
 
     def __init__(self):
         self.completions = []

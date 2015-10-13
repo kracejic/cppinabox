@@ -44,12 +44,14 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
     CustomBaseCommandCommand
     '''
     command = ""
+    edit = None
 
     def run(self, edit):
         if not getServer().configured:
             printd("[Cppinabox] [Cmd] "+self.command+" - test if configured and enabled - NO")
             return
         printd("[Cppinabox] [Cmd] "+self.command+" - test if configured and enabled - YES")
+        self.edit = edit
 
         # prepare parameters
         row, col = get_row_col(self.view)
@@ -64,30 +66,13 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
         sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
         t.start()
 
+
+
     def is_enabled(self):
         '''
         Determine if this command is enabled or not
         '''
         return is_cpp(self.view)
-
-    def _goto(self, data):
-        '''
-        Goto declaration callback
-        '''
-        # point = self.view.text_point(row, col)
-        # region = self.view.word(
-        #     point) if check_select_after_goto() else sublime.Region(point, point)
-        # self.view.sel().clear()
-        # self.view.sel().add(region)
-        # self.view.show_at_center(region)
-
-        row = data.get('line_num', 1)
-        col = data.get('column_num', 1)
-        # filepath = get_file_path(data.get('filepath', self.view.file_name()), reverse=True)
-        filepath = data.get('filepath', self.view.file_name())
-        printd("[Cppinabox]  [Cmd]GOTO file: {}, row: {}, col: {}".format(filepath, row, col))
-        sublime.active_window().open_file('{}:{}:{}'.format(filepath, row, col),
-                                          sublime.ENCODED_POSITION)
 
     def onSuccess(self, data):
         print("[Cppinabox] [Cmd] "+self.command+" onSuccess - not implemented")
@@ -96,7 +81,7 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
         print("[Cppinabox] [Cmd] "+self.command+" onFail - not implemented")
 
 
-class CppycmgotoCommand(CustomBaseCommandCommand):
+class CppinaboxgotoCommand(CustomBaseCommandCommand):
     command = "GoTo"
 
     def onSuccess(self, data):
@@ -115,28 +100,69 @@ class CppycmgotoCommand(CustomBaseCommandCommand):
         sublime.status_message("[Cppinabox] "+self.command+" failed")
 
 
-class CppycmgotodeclarationCommand(CppycmgotoCommand):
+class CppinaboxgotodeclarationCommand(CppinaboxgotoCommand):
     command = "GoToDeclaration"
 
-class CppycmgotodefinitionCommand(CppycmgotoCommand):
+class CppinaboxgotodefinitionCommand(CppinaboxgotoCommand):
     command = "GoToDefinition"
 
 
-class CppycmgotoimpreciseCommand(CppycmgotoCommand):
+class CppinaboxgotoimpreciseCommand(CppinaboxgotoCommand):
     command = "GoToImprecise"
 
 
 
+def displayResult(text):
+    window = sublime.active_window()
+    pt = window.create_output_panel("cppinaboxPanel")
+
+    pt.set_read_only(False)
+    pt.run_command('erase_view')
+    pt.run_command('append', {'characters': text})
+    pt.set_read_only(True)
+
+    window.run_command("show_panel", {"panel": "output."+"cppinaboxPanel"})
 
 
-class CppycmgetparentCommand(CustomBaseCommandCommand):
+
+
+
+class CppinaboxgetBaseMessageCommand(CustomBaseCommandCommand):
     command = "GetParent"
+    whereDataAre = ""
 
     def onSuccess(self, data):
-        print("[Cppinabox] "+self.command+" success")
         sublime.status_message("[Cppinabox] "+self.command+" success")
+        if self.whereDataAre in data:
+            print("[Cppinabox] "+self.command+" success = " + data[self.whereDataAre])
+            displayResult(data[self.whereDataAre])
 
     def onFail(self):
         print("[Cppinabox] [Cmd] "+self.command+" failed")
         sublime.status_message("[Cppinabox] "+self.command+" failed")
 
+
+
+
+class CppinaboxgetparentCommand(CppinaboxgetBaseMessageCommand):
+    command = "GetParent"
+    whereDataAre = "message"
+
+
+
+class CppinaboxgettypeCommand(CppinaboxgetBaseMessageCommand):
+    command = "GetType"
+    whereDataAre = "message"
+
+
+
+class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
+    command = "GetDoc"
+    whereDataAre = "detailed_info"
+
+
+class CppinaboxgetdocquickCommand(CppinaboxgetBaseMessageCommand):
+    command = "GetDocQuick"
+    whereDataAre = "detailed_info"
+
+ 

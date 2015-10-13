@@ -1,22 +1,28 @@
 
-# from .autocomplete import CppYCMCompletionsListener
-# from .highlight_problems import CppYCMHighlightProblemsListener
-# from .loadextraconf import CppYCMLoadExtraConfListener
+# from .autocomplete import CppinaboxCompletionsListener
+# from .highlight_problems import CppinaboxHighlightProblemsListener
+# from .loadextraconf import CppinaboxLoadExtraConfListener
 
 
-from .completionlistener import CppYCMCompletionsListener
-from .goto import CppycmgotoCommand
-from .goto import CppycmgotodeclarationCommand
-from .goto import CppycmgotodefinitionCommand
-from .goto import CppycmgotoimpreciseCommand
+from .completionlistener import CppinaboxCompletionsListener
+from .goto import CppinaboxgotoCommand
+from .goto import CppinaboxgotodeclarationCommand
+from .goto import CppinaboxgotodefinitionCommand
+from .goto import CppinaboxgotoimpreciseCommand
 
-from .goto import CppycmgetparentCommand
+from .goto import CppinaboxgetparentCommand
+from .goto import CppinaboxgettypeCommand
+from .goto import CppinaboxgetdocCommand
+from .goto import CppinaboxgetdocquickCommand
 
 __all__ = [
-    'CppYCMCompletionsListener',
-    'CppycmgotoCommand',
-    'CppycmgotodeclarationCommand',
-    'CppycmgotodefinitionCommand',
-    'CppycmgotoimpreciseCommand',
-    'CppycmgetparentCommand',
+    'CppinaboxCompletionsListener',
+    'CppinaboxgotoCommand',
+    'CppinaboxgotodeclarationCommand',
+    'CppinaboxgotodefinitionCommand',
+    'CppinaboxgotoimpreciseCommand',
+    'CppinaboxgetparentCommand',
+    'CppinaboxgettypeCommand',
+    'CppinaboxgetdocCommand',
+    'CppinaboxgetdocquickCommand',
 ]

@@ -14,7 +14,14 @@ Derived TestClass::func(){
     return {};
 }
 
-
+/**
+ * This is description for void foo(Base a) function
+ *
+ * There is some more detail info
+ * Blablablbal
+ * 
+ * @param a description for parameter a
+ */
 void foo(Base a)
 {
     /* code */
@@ -24,6 +31,15 @@ void foo(Base a)
     a.foo();
 }
 
+
+/**
+ * This is description for void foo(Base& a) function2
+ *
+ * aljsdhj lkashdjaslkjdl;ka jlkdj alksjdl kajs
+ * 
+ * 
+ * @param a description for parameter a
+ */
 void foo2(Base& a)
 {
     /* code */
@@ -37,11 +53,18 @@ int main(int argc, char const *argv[])
     x.foo();
 
     TestClass ttt;
-    ttt.func();
+    auto ffff = ttt.func();
 
-    std::vector<Derived> v;
-    v[1].foo();
-    v.
+    ffff.foo();
+
+
+    auto& obj = ttt;
+
+    obj.x.foo();
+
+    std::vector<Derived> vvvv;
+    vvvv[1].foo();
+    auto front = vvvv.front();
 
     // ((Base*)x)->f();
 
