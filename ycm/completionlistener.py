@@ -52,6 +52,7 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
         self.view_line = dict()
         self.extra_conf_loaded = False
 
+
     def on_query_completions(self, view, prefix, locations):
         '''
         Sublime Text autocompletion event handler.
@@ -95,7 +96,9 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
                    [getServer(), filepath, contents, row, col, self._complete])
         t.daemon = True
         printd("[Cppinabox] Starting daemon")
+        sublime.status_message("[Cppinabox] Completion request sent ... ")
         t.start()
+
 
     def _complete(self, proposals):
         if len(proposals):
@@ -107,9 +110,17 @@ class CppYCMCompletionsListener(sublime_plugin.EventListener):
             sublime.status_message("[Cppinabox] Completion not available")
             print("[Cppinabox] Completion not available")
 
+
     def _run_auto_complete(self):
         active_view().run_command("auto_complete", {
             'disable_auto_insert': True,
             'next_completion_if_showing': False,
             'auto_complete_commit_on_tab': True,
         })
+
+
+    def is_enabled(self):
+        '''
+        Determine if this command is enabled or not
+        '''
+        return is_cpp(self.view)

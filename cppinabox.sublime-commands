@@ -11,22 +11,24 @@
   {
     "caption": "Cppinabox: GOTO definition/declaration",
     "command": "cppycmgoto",
-    "args": {"command": "goto"}
   },
   {
     "caption": "Cppinabox: GOTO declaration",
-    "command": "cppycmgoto",
-    "args": {"command": "declaration"}
+    "command": "cppycmgotodeclaration",
   },
   {
     "caption": "Cppinabox: GOTO definition",
-    "command": "cppycmgoto",
-    "args": {"command": "definition"}
+    "command": "cppycmgotodefinition",
   },
   {
     "caption": "Cppinabox: GOTO imprecise",
-    "command": "cppycmgoto",
-    "args": {"command": "imprecise"}
+    "command": "cppycmgotoimprecise",
+  },
+
+
+  {
+    "caption": "Cppinabox: Get parent",
+    "command": "Cppycmgetparent",
   },
 
 
