@@ -55,5 +55,10 @@ public:
      */
     Derived func();
 
+
+    Derived func2(){
+        return {};
+    }
+
     
 };

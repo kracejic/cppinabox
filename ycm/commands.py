@@ -2,6 +2,7 @@ import sublime
 import sublime_plugin
 import json
 from threading import Thread
+from multiprocessing.pool import ThreadPool
 
 from .server import *
 from .utils import *
@@ -28,8 +29,15 @@ def goto_func(server, filepath, contents, row, col, callback, callbackFail, cmd)
     printd("[Cppinabox] [Cmd]   return("+cmd+") = " + str(rst))
     if rst == '':
         callbackFail()
+        return
 
-    data = json.loads(rst)
+    try:
+        data = json.loads(rst)
+    except:
+        printd(" EXCPETION reading json")
+        callbackFail()
+        return
+        
     callback(data)
 
 
@@ -40,6 +48,11 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
     '''
     command = ""
     edit = None
+
+    t = None
+
+    def run2(self, row, col, filepath, contents):
+        pass
 
     def run(self, edit):
         if not getServer().configured:
@@ -54,12 +67,13 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
         contents = self.view.substr(sublime.Region(0, self.view.size()))
 
         # start goto thread
-        t = Thread(None, goto_func, 'GotoAsync',
+        self.t = Thread(None, goto_func, 'GotoAsync',
                    [getServer(), filepath, contents, row, col, self.onSuccess, 
                    self.onFail, self.command])
-        t.daemon = True
+        self.t.daemon = True
         sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
-        t.start()
+        self.t.start()
+        self.run2(row, col, filepath, contents)
 
 
 
@@ -153,13 +167,75 @@ class CppinaboxgettypeCommand(CppinaboxgetBaseMessageCommand):
     whereDataAre = "message"
 
 
-class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
-    command = "GetDoc"
-    whereDataAre = "detailed_info"
-
-
 class CppinaboxgetdocquickCommand(CppinaboxgetBaseMessageCommand):
     command = "GetDocQuick"
     whereDataAre = "detailed_info"
 
+
+class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
+    command = "GetDoc"
+    whereDataAre = "detailed_info"
+    t2 = None
+
+    gotoData = None
  
+    def run2(self, row, col, filepath, contents):
+        print("brekeke")
+        self.t2 = Thread(None, goto_func, 'GoTo',
+                   [getServer(), filepath, contents, row, col, self.onSuccessGOTO, 
+                   self.onFailGOTO, 'GoTo'])
+        self.t2.daemon = True
+        sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
+        self.t2.start()
+
+
+    def onSuccessGOTO(self, data):
+        self.gotoData = data
+        pass
+
+    def onFailGOTO(self):
+        self.gotoData = False
+        pass
+
+    def onFail(self):
+        print("[Cppinabox] [Cmd] "+self.command+" failed")
+        sublime.status_message("[Cppinabox] "+self.command+" failed")
+
+        self.t2.join()
+
+        if self.gotoData == None:
+            printd("[Cppinabox] [Cmd] "+self.command+" self.gotoData == None")
+        if self.gotoData == False:
+            printd("[Cppinabox] [Cmd] "+self.command+" self.gotoData == False")
+        else:
+            printd("[Cppinabox] [Cmd] "+self.command+" self.gotoData ELSE" + str(self.gotoData))
+
+            #{'line_num': 59, 'column_num': 13, 'filepath': 'C:\\Users\\cz2b11q9\\AppData\\Roaming\\Sublime Text 3\\Packages\\cppinabox\\test\\test.h'}
+            ret = ""
+            with open(self.gotoData["filepath"]) as source:
+                linenum = 0
+                targetLine = self.gotoData["line_num"]
+                for line in source:
+                    linenum += 1
+                    if linenum > (targetLine-5) and linenum < (targetLine+7):
+                        ret = ret + line
+                    if linenum == targetLine:
+                        ret = ret + "// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+
+            self.onSuccess({"detailed_info":ret})
+            return
+
+        print("[Cppinabox] [Cmd] "+self.command+" failed")
+        sublime.status_message("[Cppinabox] "+self.command+" failed")
+        displayResult("nothing was found")
+
+
+
+
+
+
+
+
+
+
+

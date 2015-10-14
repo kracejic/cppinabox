@@ -54,6 +54,7 @@ int main(int argc, char const *argv[])
 
     TestClass ttt;
     auto ffff = ttt.func();
+    ttt.func2();
 
     ffff.foo();
 
