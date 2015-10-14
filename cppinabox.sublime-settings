@@ -1,8 +1,29 @@
 {
+    //--------------------------------------------------------------------------
+    //  completions via ycm
     "enable": false,
     "debugMode": false,
+    //path to ycmd directory containing ycm_core.pyd
     "ycmd_path": "",
+    //path to python2
     "python2path": "python",
+
+    //If you want to run YCMD from MSYS2 enviroment:
     "MSYS_path_fix": false,
+    // msys_pre_command.bat look like this, it will run any arguments 
+    // as command in msys2 shell:
+    // set MSYSTEM=MINGW32
+    // C:\msys64\usr\bin\bash.exe --login -c "%*"
     "MSYS_pre_command": "",
+
+
+    //--------------------------------------------------------------------------
+    //  open header - it searches for them in ./ and ../
+    "source_directories_paths":[".","src","source", "main"],
+    "header_directories_paths":[".", "inc", "incl", "include", "includes", "header", "headers"],
+
+    "header_extensions": [".h", ".hpp", ".hh", ".hxx"],
+    "source_extensions": [".c", ".cpp", ".cc", ".cxx", ".m", ".mm"],
 }
+
+

@@ -1,11 +1,10 @@
 [
     { 
-        "keys": ["alt+o"], 
+        "keys": ["super+alt+up"], 
         "command": "cppinabox_open_header", 
         "context":
         [
             { "key": "selector", "operator": "equal", "operand": "source.c++" },
-            { "key": "selector", "operator": "equal", "operand": "source.c" }
         ]
     },
 ]

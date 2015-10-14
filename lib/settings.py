@@ -15,10 +15,10 @@ class Settings(object):
         return sublime.load_settings("cppinabox.sublime-settings")
 
     def isDebugMode():
-        return Settings.get(None, "debugMode", False)
+        return Settings.get("debugMode", False)
 
     def isEnabled():
-        return Settings.get(None, "enable", False)
+        return Settings.get("enable", False)
 
     def getYcmdPath():
         ycmd_path = Settings._get_settings().get("ycmd_path", "server")
@@ -32,7 +32,7 @@ class Settings(object):
     def getMSYSPRECommand():
         return Settings._get_settings().get("MSYS_pre_command", "")
 
-    def get(view, key, default=None):
+    def get(key, default=None):
         """Load individual setting.
 
         :param key: setting key to get value for
@@ -40,8 +40,7 @@ class Settings(object):
 
         :returns: value for ``key`` if ``key`` exists, else ``default``
         """
-        if view == None:
-            view = sublime.active_window().active_view()
+        view = sublime.active_window().active_view()
 
         if view != None:
             if view.settings().get('cppinabox') != None:

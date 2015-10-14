@@ -45,6 +45,11 @@
     "command": "cppinaboxgetdocquick",
   },
 
+{
+    "caption": "Cppinabox: Open header",
+    "command": "cppinabox_open_header",
+  },
+
 
   {
     "caption": "Cppinabox: Debug Test Command",

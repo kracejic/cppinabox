@@ -101,7 +101,7 @@ class YCMDServer(object):
         filePath = get_file_path()
 
         #find correct path
-        conf_path = Settings.get(view, "ycm_extra_conf", None)
+        conf_path = Settings.get("ycm_extra_conf", None)
         if conf_path:
             if conf_path[0] == '\\' or conf_path[1] == ':':
               pass
