@@ -54,7 +54,7 @@ int main(int argc, char const *argv[])
 
     TestClass ttt;
     auto ffff = ttt.func();
-    ttt.func2();
+    ttt.func2();  //get doc will fail
 
     ffff.foo();
 

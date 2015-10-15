@@ -51,6 +51,11 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
 
     t = None
 
+    row = 0
+    col = 0
+    filepath = 0
+    contents = None
+
     def run2(self, row, col, filepath, contents):
         pass
 
@@ -65,6 +70,11 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
         row, col = get_row_col(self.view)
         filepath = get_file_path(self.view.file_name())
         contents = self.view.substr(sublime.Region(0, self.view.size()))
+
+        self.row = row
+        self.col = col
+        self.filepath = filepath
+        self.contents = contents
 
         # start goto thread
         self.t = Thread(None, goto_func, 'GotoAsync',
@@ -130,6 +140,7 @@ def displayResult(text):
     pt.run_command('erase_view')
     pt.run_command('append', {'characters': text})
     pt.set_read_only(True)
+    pt.set_syntax_file("Packages/C++/C++.tmLanguage")
 
     window.run_command("show_panel", {"panel": "output."+"cppinaboxPanel"})
 
@@ -181,12 +192,7 @@ class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
  
     def run2(self, row, col, filepath, contents):
         print("brekeke")
-        self.t2 = Thread(None, goto_func, 'GoTo',
-                   [getServer(), filepath, contents, row, col, self.onSuccessGOTO, 
-                   self.onFailGOTO, 'GoTo'])
-        self.t2.daemon = True
-        sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
-        self.t2.start()
+
 
 
     def onSuccessGOTO(self, data):
@@ -201,6 +207,13 @@ class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
         print("[Cppinabox] [Cmd] "+self.command+" failed")
         sublime.status_message("[Cppinabox] "+self.command+" failed")
 
+
+        self.t2 = Thread(None, goto_func, 'GoTo',
+                   [getServer(), self.filepath, self.contents, self.row, self.col, self.onSuccessGOTO, 
+                   self.onFailGOTO, 'GoTo'])
+        self.t2.daemon = True
+        sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
+        self.t2.start()
         self.t2.join()
 
         if self.gotoData == None:
@@ -220,7 +233,7 @@ class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
                     if linenum > (targetLine-5) and linenum < (targetLine+7):
                         ret = ret + line
                     if linenum == targetLine:
-                        ret = ret + "// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+                        ret = ret + "//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
 
             self.onSuccess({"detailed_info":ret})
             return
