@@ -2,7 +2,6 @@ import sublime
 import sublime_plugin
 import json
 from threading import Thread
-from multiprocessing.pool import ThreadPool
 
 from .server import *
 from .utils import *
@@ -13,7 +12,7 @@ from ..lib.settings import printd
 
 def goto_func(server, filepath, contents, row, col, callback, callbackFail, cmd):
     '''
-    Thread that sends request to server and waits for response. It will call 
+    Thread that sends request to server and waits for response. It will call
     proper callback on the end.
     '''
 
@@ -37,7 +36,7 @@ def goto_func(server, filepath, contents, row, col, callback, callbackFail, cmd)
         printd(" EXCPETION reading json")
         callbackFail()
         return
-        
+
     callback(data)
 
 
@@ -78,7 +77,7 @@ class CustomBaseCommandCommand(sublime_plugin.TextCommand):
 
         # start goto thread
         self.t = Thread(None, goto_func, 'GotoAsync',
-                   [getServer(), filepath, contents, row, col, self.onSuccess, 
+                   [getServer(), filepath, contents, row, col, self.onSuccess,
                    self.onFail, self.command])
         self.t.daemon = True
         sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
@@ -189,7 +188,7 @@ class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
     t2 = None
 
     gotoData = None
- 
+
     def run2(self, row, col, filepath, contents):
         print("brekeke")
 
@@ -209,7 +208,7 @@ class CppinaboxgetdocCommand(CppinaboxgetBaseMessageCommand):
 
 
         self.t2 = Thread(None, goto_func, 'GoTo',
-                   [getServer(), self.filepath, self.contents, self.row, self.col, self.onSuccessGOTO, 
+                   [getServer(), self.filepath, self.contents, self.row, self.col, self.onSuccessGOTO,
                    self.onFailGOTO, 'GoTo'])
         self.t2.daemon = True
         sublime.status_message("[Cppinabox] Request "+self.command+" sent ... ")
