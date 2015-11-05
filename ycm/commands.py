@@ -30,6 +30,7 @@ def goto_func(server, filepath, contents, row, col, callback, callbackFail, cmd)
         callbackFail()
         return
 
+
     try:
         data = json.loads(rst)
     except:
@@ -116,6 +117,8 @@ class CppinaboxgotoCommand(CustomBaseCommandCommand):
     def onFail(self):
         print("[Cppinabox] [Cmd] "+self.command+" failed")
         sublime.status_message("[Cppinabox] "+self.command+" failed")
+        if Settings.get("gotofallback", True):
+            self.view.window().run_command("goto_definition")
 
 
 class CppinaboxgotodeclarationCommand(CppinaboxgotoCommand):

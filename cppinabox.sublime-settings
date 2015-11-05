@@ -16,14 +16,17 @@
     // C:\msys64\usr\bin\bash.exe --login -c "%*"
     "MSYS_pre_command": "",
 
+    //fall back for goto definition
+    "gotofallback":true,
+
 
     //--------------------------------------------------------------------------
     //  open header - it searches for them in ./ and ../
     "source_directories_paths":[".","src","source", "main"],
     "header_directories_paths":[".", "inc", "incl", "include", "includes", "header", "headers"],
 
-    "header_extensions": [".h", ".hpp", ".hh", ".hxx"],
-    "source_extensions": [".c", ".cpp", ".cc", ".cxx", ".m", ".mm"],
+    "header_extensions": [".h", ".hpp", ".hh", ".hxx", ".h.in"],
+    "source_extensions": [".c", ".cpp", ".cc", ".cxx", ".m", ".mm", ".cpp.in"],
 }
 
 

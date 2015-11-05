@@ -220,6 +220,14 @@ def restartServer():
         _server1.stopServer()
     _server1.checkAndRestartIfNeeded(sublime.active_window().active_view())
 
+
+def stopServer():
+    getServer()
+    if _server1:
+        _server1.stopServer()
+
+
+
 def checkServer():
     getServer()
     txt =  "Status of cppinabox:\n";

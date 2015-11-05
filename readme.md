@@ -3,12 +3,20 @@
 Cppinabox is plugin for C++. It targets on providing almost complete IDE-like experience for developers in C++. This plugin is right now in heavy development.
 
 
+## Features
+
+* Smart autocompletion (based on YCMD)
+* GOTO definition, declaration, definition/declaration, imprecise
+* Default sublime text GOTO as a fallback for GOTOs from YCMD
+* Get Type (to check if *auto* is deduced correctly), Get parent
+* Get Doc - tries to get doxygen documentation via YCMD (fallback: displays surrounding lines of get definition/declaration result)
+* Ctrl + click for GOTO definition/declaration
+* Better open header (searches two directories up for common header directy names)
+* auto restart of YCMD server
+
 ## Features (planned)
 
 * Snippets
-* Smart autocompletion (based on YCMD)
-
-
 
 ## Instalation of YCMD
 
@@ -63,6 +71,7 @@ And you can add them to your .ycm_extra_conf.py:
  "-isystemC:/path_to_msys64/mingw32/include",
 ```
 
+Or you can adapt conf file in this plugin.
 
 
 ## Available snippets

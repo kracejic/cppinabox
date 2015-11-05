@@ -44,6 +44,8 @@ class CppinaboxOpenHeaderCommand(sublime_plugin.TextCommand):
         tmpList = []
         for x in possibleDirs:
             tmpList.append("../"+x)
+        for x in possibleDirs:
+            tmpList.append("../../"+x)
         possibleDirs.extend(tmpList)
 
 

@@ -2,9 +2,12 @@
     { 
         "keys": ["alt+o"], 
         "command": "cppinabox_open_header", 
-        "context":
-        [
-            { "key": "selector", "operator": "equal", "operand": "source.c++" },
-        ]
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
     },
+    {
+        "keys": ["f10"], 
+        "command": "cppinaboxgoto",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+
 ]

@@ -25,9 +25,7 @@ class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
         # print(str(opener.open(loc)))
         # print(str(opener.open(loc).read()))
         # print(urllib.request.urlopen(loc, proxies={}).read())
-        #
-        #
-        #
+
         window = sublime.active_window()
         pt = window.create_output_panel("paneltest")
         pt.set_read_only(False)
@@ -36,6 +34,7 @@ class CppinaboxdebugtestCommand(sublime_plugin.TextCommand):
         pt.set_read_only(True)
         # pt.end_edit(edit)
         window.run_command("show_panel", {"panel": "output.paneltest"})
+        window = sublime.active_window()
 
 
 class CppinaboxrestartCommand(sublime_plugin.TextCommand):
