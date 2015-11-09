@@ -1,0 +1,51 @@
+[
+    { 
+        "keys": ["alt+o"], 
+        "command": "cppinabox_open_header", 
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+
+    {
+        "keys": ["ctrl+f12"], 
+        "command": "cppinaboxgoto",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+    {
+        "keys": ["alt+d"], 
+        "command": "cppinaboxgoto",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+
+    {
+        "keys": ["ctrl+F11"], 
+        "command": "cppinaboxgotodeclaration",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+    {
+        "keys": ["alt+w"], 
+        "command": "cppinaboxgotodeclaration",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+
+    {
+        "keys": ["alt+r"], 
+        "command": "cppinaboxgetdoc",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+    {
+        "keys": ["ctrl+F10"], 
+        "command": "cppinaboxgetdoc",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+
+    {
+        "keys": ["alt+c"], 
+        "command": "cppinaboxgettype",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },
+    {
+        "keys": ["ctrl+F9"], 
+        "command": "cppinaboxgettype",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "source.c++" }, ]
+    },    
+]

@@ -1,6 +1,11 @@
 {
+    // What you need to fill:
+    // ycmd_path, python2path
+
+
+
     //--------------------------------------------------------------------------
-    //  completions via ycm
+    //  completions via ycmd
     "enable": false,
     "debugMode": false,
     //path to ycmd directory containing ycm_core.pyd
@@ -8,7 +13,7 @@
     //path to python2
     "python2path": "python",
 
-    //If you want to run YCMD from MSYS2 enviroment:
+    //Only if you want to run YCMD from MSYS2 enviroment:
     "MSYS_path_fix": false,
     // msys_pre_command.bat look like this, it will run any arguments 
     // as command in msys2 shell:

@@ -10,13 +10,30 @@ Cppinabox is plugin for C++. It targets on providing almost complete IDE-like ex
 * Default sublime text GOTO as a fallback for GOTOs from YCMD
 * Get Type (to check if *auto* is deduced correctly), Get parent
 * Get Doc - tries to get doxygen documentation via YCMD (fallback: displays surrounding lines of get definition/declaration result)
-* Ctrl + click for GOTO definition/declaration
+* Ctrl + Shift + click for GOTO definition/declaration
 * Better open header (searches two directories up for common header directy names)
-* auto restart of YCMD server
+* auto restart of YCMD server in case of server being down
+
 
 ## Features (planned)
 
 * Snippets
+
+
+## Keyboard shortcuts
+
+| Key           | Function           | 
+| ------------- | ------------------ |
+| alt+o         | open header        |
+| alt+o         | open header        |
+| alt+d         | goto def/dec       |
+| alt+w         | goto declaration   |
+| alt+r         | get doc            |
+| alt+c         | get type           |
+
+* Ctrl + Shift + click for GOTO definition/declaration
+* Ctrl+shift+P + type cppinabox to see what other function are available
+
 
 ## Instalation of YCMD
 
@@ -31,11 +48,11 @@ Cppinabox is plugin for C++. It targets on providing almost complete IDE-like ex
     * download and install python2
 
 * MSYS2
-    * [msys2 download link](https://msys2.github.io/)
-    * pacman --needed -Sy bash pacman pacman-mirrors msys2-runtime
+    * Download and install [msys2](https://msys2.github.io/)
+    * ```pacman --needed -Sy bash pacman pacman-mirrors msys2-runtime```
     * *restart msys2*
-    * pacman -Su
-    * pacman -S mingw32/mingw-w64-i686-boost mingw32/mingw-w64-i686-clang mingw32/mingw-w64-i686-clang-analyzer mingw32/mingw-w64-i686-clang-tools-extra mingw32/mingw-w64-i686-cmake mingw32/mingw-w64-i686-gcc mingw32/mingw-w64-i686-gdb mingw32/mingw-w64-i686-make mingw32/mingw-w64-i686-ninja mingw32/mingw-w64-i686-python2 mingw32/mingw-w64-i686-python3 msys/git 
+    * ```pacman -Su```
+    * ```pacman -S mingw32/mingw-w64-i686-boost mingw32/mingw-w64-i686-clang mingw32/mingw-w64-i686-clang-analyzer mingw32/mingw-w64-i686-clang-tools-extra mingw32/mingw-w64-i686-cmake mingw32/mingw-w64-i686-gcc mingw32/mingw-w64-i686-gdb mingw32/mingw-w64-i686-make mingw32/mingw-w64-i686-ninja mingw32/mingw-w64-i686-python2 mingw32/mingw-w64-i686-python3 msys/git```
 
     * If you have proxy do not forget to: ```export http_proxy='http://127.0.0.1:6666' ; export ftp_proxy='http://127.0.0.1:6666'```
 
@@ -75,4 +92,12 @@ Or you can adapt conf file in this plugin.
 
 
 ## Available snippets
+
+|      trigger       |        snippet description           |
+| ------------------ | ------------------------------------ |
+|       |       |
+
+
+
+
 
