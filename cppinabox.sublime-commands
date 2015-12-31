@@ -7,7 +7,9 @@
     "caption": "Cppinabox: YCMD status to console",
     "command": "cppinaboxycmdstatus"
   },
-
+  { "caption": "Cppinabox: open folder/directory",
+    "command": "open_dir",
+    "args": {"dir": "$file_path", "file": "$file_name"} },
 
 
   {
