@@ -1,0 +1,7 @@
+<snippet>
+    <description>cout debug</description>
+    <content><![CDATA[std::cout<<"${1:int} = "<<${1}<<std::endl;
+]]></content>
+    <tabTrigger>cout</tabTrigger>
+    <scope>source.c, source.objc, source.c++, source.objc++, source.c++11</scope>
+</snippet>

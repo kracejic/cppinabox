@@ -1,0 +1,29 @@
+<snippet>
+    <description>Cpp extended Main</description>
+    <content><![CDATA[#include <vector>
+#include <string>
+#include <iostream>
+#include <stdio.h>
+#include <fstream>
+
+//g++ ${1:${TM_FILENAME}}  -std=c++11 -o a.exe && ./a.exe
+
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    ${2:cout<<"hello world!"<<endl;
+
+    ifstream file("filename.txt");
+    string s2;
+    while (getline(file, s2)) //any newline will stop the reading
+        cout << s2 << endl;
+
+    }
+    return 0;
+}
+
+]]></content>
+    <tabTrigger>main</tabTrigger>
+    <scope>source.c, source.c++, source.objc++, source.c++11</scope>
+</snippet>
