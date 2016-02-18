@@ -102,8 +102,9 @@ def is_cpp(view):
     Determine if the given view is c++ code
     '''
     try:
-        return view.match_selector(view.sel()[0].begin(), 'source.c++')
-        print("[cppinabox] IsCPP")
+        x = view.match_selector(view.sel()[0].begin(), 'source.c')
+        y = view.match_selector(view.sel()[0].begin(), 'source.c++')
+        return (x or y)
     except:
         return False
 
