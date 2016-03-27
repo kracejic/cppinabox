@@ -1,0 +1,83 @@
+%YAML 1.2
+---
+name: Buld output whith Ninja, Make, CTest support
+hidden: true
+scope: source.build_output
+contexts:
+  main:
+    - include: make
+    - match: '\b(warning): '
+      scope: markup.changed
+    - match: '\b(error): '
+      scope: markup.deleted
+    - match: '\b(note): '
+      scope: comment
+
+    - match: '^\[.+\][ ].*$'
+      scope: string
+    - match: '^[ ]*[0-9]+/[0-9]+[ ]+Test'
+      push: test
+    - match: '^FAILED: .*$'
+      scope: comment
+    - match: '^[\s]+[\^][\s]+$'
+      scope: variable
+
+  make:
+    - match: '^Scanning dependencies of .*$'
+      scope: string
+    - match: '^(make\[[1-9]\]):'
+      captures:
+        1: markup.deleted
+    - match: '^(..[^:\n]*):([0-9]+):?([0-9]+)?:? '
+      scope: constant.language
+    - match: '^(..[^:\n]*):.*In .*function.*'
+      scope: comment
+    - match: '^(..[^:\n]*):.*In [de]*constructor.*'
+      scope: comment
+    - match: '^(..[^:\n]*):.*At global scope:.*'
+      scope: comment
+    - match: '^In file included from.*$'
+      scope: comment
+      push: includes
+    - match: '^\[.+\]$'
+      scope: comment
+
+  includes:
+    - include: main
+    - match: '^[\s]*from[ ].*$'
+      scope: comment
+    - match: '^[\s]*[^f][^r][^o][^m][ ].*$'
+      pop: true
+
+  test:
+    - include: make
+    - match: '^100% tests passed.*'
+      scope: entity
+    - match: '^.*% tests passed.*'
+      scope: invalid
+    - match: ':[^.]*([.]+).*(Failed)[\s]*([0-9.sec ]*)'
+      captures:
+        1: comment
+        2: markup.deleted
+        3: comment
+    - match: ':[^.]*([.]+).*(Passed)[\s]*([0-9.sec ]*)'
+      captures:
+        1: comment
+        2: entity
+        3: comment
+    - match: '^\[.+\][ ].*$'
+      scope: string
+    - match: '^\[.+\]$'
+      scope: comment
+    - match: '^(The following tests) (FAILED):$'
+      captures:
+        1: string
+        2: markup.deleted
+      push: failedtests
+
+  failedtests:
+    - include: make
+    - match: '^[\s]*([0-9])[\s \-]*([^\s]*).*$'
+      captures:
+        1: entity
+        2: markup.changed

@@ -1,0 +1,6 @@
+<snippet>
+	<description>horizontal line</description>
+    <content><![CDATA[-------------------------------------------------------------------------------]]></content>
+    <tabTrigger>/-</tabTrigger>
+    <scope>text.html.markdown</scope>
+</snippet>

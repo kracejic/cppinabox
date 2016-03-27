@@ -136,7 +136,7 @@ class YCMDServer(object):
             print("[Cppinabox] Unexpected error during configuring of YCMD:", sys.exc_info())
             self._fail()
             return
-            
+
         self.lastConfPath = conf_path
         self.configured = True
         printd('[Cppinabox] YCMD server configured - ' + os.path.normpath(conf_path))
