@@ -1,0 +1,7 @@
+<snippet>
+	<description>std::</description>
+    <content><![CDATA[std::
+]]></content>
+    <tabTrigger>sd</tabTrigger>
+    <scope>source.c++, source.objc++, source.c++11</scope>
+</snippet>

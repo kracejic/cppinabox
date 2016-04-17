@@ -95,9 +95,43 @@ Or you can adapt conf file in this plugin.
 
 |      trigger       |        snippet description           |
 | ------------------ | ------------------------------------ |
-|       |       |
+|  sd     |  std::   |
+|  un     |  using namespace std;   |
+|  up     |  std::unique_ptr    |
+|  mu     |  std::make_unique   |
+|  sp     |  std::shared_ptr     |
+|  ms     |  std::make_shared     |
+|  i8 - ui64     |   uint64_t     |
 
 
+## C++inabox syntax
 
+Little better syntax highliting straight from github.
 
+paste this into Packages/User/C++inabox.sublime-settings
+```.json
+{
+    "auto_complete_triggers":
+    [
+        {
+            "characters": ".:>",
+            "selector": "source.c++ - string - comment - constant.numeric"
+        }
+    ],
+    "extensions":
+    [
+        "cpp",
+        "cc",
+        "cxx",
+        "c++",
+        "c",
+        "h",
+        "hpp",
+        "hxx",
+        "h++",
+        "inl",
+        "ipp"
+    ]
+}
+```
 
