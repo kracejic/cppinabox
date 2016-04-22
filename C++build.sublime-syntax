@@ -13,6 +13,12 @@ contexts:
     - match: '\b(note): '
       scope: comment
 
+    # Errors from Mentor Graphic Compiler
+    - match: '\(W\).\[ANSI\]'
+      scope: markup.changed
+    - match: '\(E\).\[ANSI\]'
+      scope: markup.deleted
+
     - match: '^\[.+\][ ].*$'
       scope: string
     - match: '^[ ]*[0-9]+/[0-9]+[ ]+Test'
@@ -28,8 +34,13 @@ contexts:
     - match: '^(make\[[1-9]\]):'
       captures:
         1: markup.deleted
+    #filename
     - match: '^(..[^:\n]*):([0-9]+):?([0-9]+)?:? '
       scope: constant.language
+    - match: '^"(.*)".*line.*pos[\s][0-9]*'
+      captures:
+        1: constant.language
+
     - match: '^(..[^:\n]*):.*In .*function.*'
       scope: comment
     - match: '^(..[^:\n]*):.*In [de]*constructor.*'
