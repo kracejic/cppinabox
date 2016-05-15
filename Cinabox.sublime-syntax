@@ -6,7 +6,7 @@ file_extensions:
   - c
   - h
 first_line_match: "-[*]-( Mode:)? C -[*]-"
-scope: source.c
+scope: source.cinabox
 
 variables:
   identifier: '\b[[:alpha:]_][[:alnum:]_]*\b'
@@ -37,6 +37,28 @@ contexts:
   # should not use the {{identifier}} variable since that is different for C++.
   #############################################################################
 
+  commentsMarks:
+    - match: '(TODO|todo|FIX|FIXME|UNDONE|NOTE|WTF|REVIEW)[\s:=;,]'
+      captures:
+        1: comment.todo
+    - match: '(BUG|ISSUE)[\s:=;,]'
+      captures:
+        1: comment.bug
+    - match: '(\*\*[^\s^*][^*]+[^\s^*]\*\*)'
+      captures:
+        1: comment.bigemphasis
+    - match: '[^*](\*[^\s^*][^*]+[^\s^*]\*)'
+      captures:
+        1: comment.emphasis
+    - match: '(@param|@return)[\s:=;,]'
+      captures:
+        1: comment.doxygen
+    - match: '(([#A-Z:-])+[0-9]+)[\s:=;,]'
+      captures:
+        1: comment.linked_item
+
+
+
   comments:
     - match: ^/\* =(\s*.*?)\s*= \*/$\n?
       scope: comment.block.c
@@ -46,6 +68,7 @@ contexts:
       scope: punctuation.definition.comment.c
       push:
         - meta_scope: comment.block.c
+        - include: commentsMarks
         - match: \*/
           scope: punctuation.definition.comment.c
           pop: true
@@ -59,6 +82,7 @@ contexts:
       scope: punctuation.definition.comment.c
       push:
         - meta_scope: comment.line.double-slash.c
+        - include: commentsMarks
         - match: '(\\)$\n'
           captures:
             1: punctuation.separator.continuation.c

@@ -19,7 +19,7 @@ Derived TestClass::func(){
  *
  * There is some more detail info
  * Blablablbal
- * 
+ *
  * @param a description for parameter a
  */
 void foo(Base a)
@@ -36,8 +36,8 @@ void foo(Base a)
  * This is description for void foo(Base& a) function2
  *
  * aljsdhj lkashdjaslkjdl;ka jlkdj alksjdl kajs
- * 
- * 
+ *
+ * TODO
  * @param a description for parameter a
  */
 void foo2(Base& a)
@@ -49,7 +49,9 @@ void foo2(Base& a)
 //-----------------------------------------------------------------------------------
 int main(int argc, char const *argv[])
 {
-    Derived x;// = new Derived();
+    Derived x;//AR-:5626: new Derived(); #1235
+    //TODO
+    //BUG some bug is *important sd* **test** *tasdasd*
     x.foo();
 
     TestClass ttt;
